@@ -1,0 +1,30 @@
+.vinput
+  background-color: var(--darkerColor)
+  display: flex
+  padding: 4px
+  align-items: center
+  height: 25px
+  width: var(--width)
+  > *
+    box-sizing: content-box
+    font-weight: 200
+    height: 20px
+    max-height: 20px
+    line-height: 20px
+    margin: 0 2px
+    color: var(--middleColor)
+  > .title
+    color: var(--lightColor)
+    flex-basis: 72px
+    min-width: 72px
+  > input[type="text"], input[type="number"]
+    color: var(--middleColor)
+    background-color: var(--lightColor)
+    border: none
+    border-radius: 2px
+    &:focus, &:active
+      outline: none
+  > input[type="number"]
+    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+      -webkit-appearance: none
+      margin: 0

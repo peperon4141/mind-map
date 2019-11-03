@@ -1,6 +1,5 @@
 <template lang="pug">
-  div(
-    style="width: 1024px; height: 800px; background-color: tomato;"
+  #vsvgrenderer(
     contenteditable
   )
     svg(
@@ -31,24 +30,19 @@
       )
 </template>
 
-<script lang="ts">
-// import { Component, Vue } from 'vue-property-decorator';
-import vrect from '@/components/VRect.vue'
-import vpath from '@/components/VPath.vue'
+<script>
 import { mapGetters } from 'vuex'
 import store from '@/store'
 
-const Tweakpane = require('tweakpane')
-
-type Point = {
-  x: number
-  y: number
-}
+// type Point = {
+//   x: number
+//   y: number
+// }
 
 export default {
   components: {
-    vrect,
-    vpath
+    vrect: () => import('@/components/Svgs/VRect.vue'),
+    vpath: () => import('@/components/Svgs/VPath.vue'),
   },
   data: function() {
     return {
@@ -70,34 +64,22 @@ export default {
       return params.join(' ')
     },
   },
-  mounted: function() {
-    const pane = new Tweakpane();
-    pane.addInput(this, 'offset', { x: {min: -300, max: 300}, y: {min: -300, max: 300} })
-    pane.addInput(this, 'size', { x: {min: 400, max: 2000}, y: {min: 400, max: 2000} })
-    const btn = pane.addButton({
-      title: 'create',
-    }).on('click', () => {
-      store.commit('create', {
-        from: Object.keys(this.allElements)[0]
-      })
-    });
-  },
   methods: {
-    pathStartPoint(id: string): Point {
+    pathStartPoint(id) {
       const parent = this.findElement(id)
       return {
         x: parent.position.x + parent.size.x,
         y: parent.position.y + parent.size.y / 2
       }
     },
-    pathEndPoint(id: string): Point {
+    pathEndPoint(id) {
       const child = this.findElement(id)
       return {
         x: child.position.x,
         y: child.position.y + child.size.y / 2
       }
     },
-    onMouseMoveHandler: function(e: MouseEvent) {
+    onMouseMoveHandler: function(e) {
       if (!this.dragItem) return
       const event = (e.type === 'mousemove') ? e : e.changedTouches[0]
 
@@ -123,7 +105,7 @@ export default {
     },
     onMouseDownHandler(e) {
       const event = (e.type === 'mousedown') ? e : e.changedTouches[0]
-      this.dragItem = event.target as HTMLElement
+      this.dragItem = event.target
 
       const p = this.mousePointToSVGPoint(
         this.$refs.svg,
@@ -134,11 +116,9 @@ export default {
         x: p.x - this.dragItem.getAttribute('x'),
         y: p.y - this.dragItem.getAttribute('y')
       }
-
-      this.$forceUpdate()
       event.preventDefault();
     },
-    mousePointToSVGPoint(svgElement, targetElement, point: any){
+    mousePointToSVGPoint(svgElement, targetElement, point){
       const svgPoint = svgElement.createSVGPoint()
       svgPoint.x = point.x
       svgPoint.y = point.y
@@ -150,3 +130,9 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+#vsvgrenderer
+  flex-grow: 1
+  background-color: var(--lightestColor)
+</style>
