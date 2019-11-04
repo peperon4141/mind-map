@@ -47,7 +47,7 @@ export default {
   .input
     appearance: none
     height: 2px
-    flex-grow: 1
+    width: 80px
     background-color: var(--darkColor)
     border-radius: 1px
     &:focus, &:active
@@ -62,5 +62,6 @@ export default {
       background-color: var(--lightColor)
       border-radius: 2px
   #vinput
-    min-width: 80px
+    flex-grow: 1
+    // min-width: 80px
 </style>

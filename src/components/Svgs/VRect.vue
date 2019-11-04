@@ -1,5 +1,5 @@
 <template>
-  <g @mousedown="onMouseDownHandler" :id="id">
+  <g @mousedown="click" :id="id">
     <rect
       :id="id"
       :x="position.x" :y="position.y"
@@ -35,7 +35,6 @@ export default {
     text: String,
     position: Object,
     size: Object,
-    onMouseDownHandler: Function
   },
   computed: {
     textRect: function() {
@@ -52,6 +51,13 @@ export default {
       console.log(`height---${this.textRect['height']}`)
       return this.textRect['height']
     },
+  },
+  methods: {
+    click (e) {
+      console.log(`--click----${this.id}`)
+      e['id'] = this.id
+      this.$emit('click', e)
+    }
   },
   mounted: function() {
     this.loading = false

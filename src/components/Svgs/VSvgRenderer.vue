@@ -26,7 +26,7 @@
         :position="elem.position"
         :text="elem.text"
         :size="elem.size"
-        :onMouseDownHandler="onMouseDownHandler"
+        @click="onMouseDownHandler"
       )
 </template>
 
@@ -47,10 +47,11 @@ export default {
   data: function() {
     return {
       offset: { x: 0, y: 0 },
-      size: { x: 800, y: 600 },
+      size: { x: 800, y: 800 },
       dragItem: null,
       dragOffset: { x: 0, y: 0 },
-      mousePosition: { x: 0, y: 0 }
+      mousePosition: { x: 0, y: 0 },
+      currentId: null
     }
   },
   computed: {
@@ -106,6 +107,7 @@ export default {
     onMouseDownHandler(e) {
       const event = (e.type === 'mousedown') ? e : e.changedTouches[0]
       this.dragItem = event.target
+      store.commit('setCurrent', e.id)
 
       const p = this.mousePointToSVGPoint(
         this.$refs.svg,
@@ -134,5 +136,4 @@ export default {
 <style lang="sass" scoped>
 #vsvgrenderer
   flex-grow: 1
-  background-color: var(--lightestColor)
 </style>

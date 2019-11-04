@@ -1,5 +1,5 @@
 <template lang="pug">
-.inputtitle.vinput
+#inputtitle.vinput
   font-awesome-icon.icon(icon="chevron-right")
   span.header {{title}}
   .inputshadow
@@ -15,19 +15,14 @@ export default {
 
 <style lang="sass" scoped>
 @import "@/assets/InputComponents.sass"
-.inputtitle.vinput
+#inputtitle.vinput
   position: relative
+  height: 30px
   background-color: var(--darkColor)
-  margin-bottom: 3px
+  margin: 3px 0
+  box-shadow: 0 2px 2px -2px var(--darkestColor)
+  > .icon
+    margin-right: 8px
   > *
     color: var(--lightColor)
-  > .inputshadow
-    position: absolute
-    height: 3px
-    width: 100%
-    bottom: 0
-    left: 0
-    margin: 0
-    background-color: var(--darkerColor)
-    box-shadow: 0 1px 2px 0px var(--darkestColor) inset
 </style>

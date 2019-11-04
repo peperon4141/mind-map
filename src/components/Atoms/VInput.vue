@@ -1,12 +1,11 @@
 <template lang="pug">
-#vinput
-  input(
-    :type="type"
-    v-model="updateValue"
-    :min="option.min"
-    :max="option.max"
-    :step="option.step"
-  )
+input#vinput(
+  :type="type"
+  v-model="updateValue"
+  :min="option.min"
+  :max="option.max"
+  :step="option.step"
+)
 </template>
 
 <script>
@@ -30,18 +29,17 @@ export default {
 </script>
 
 <style lang="sass">
-#vinput
-  input
-    width: 100%
-    height: 100%
-    color: var(--lightColor)
-    background-color: var(--darkColor)
-    border: none
-    border-radius: 2px
-    padding: 0 4px
-    &:focus, &:active
-      outline: none
-    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
-      -webkit-appearance: none
-      margin: 0
+input#vinput
+  width: 100%
+  height: 100%
+  color: var(--lightColor)
+  background-color: var(--darkColor)
+  border: none
+  border-radius: 2px
+  padding: 0 4px
+  &:focus, &:active
+    outline: none
+  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+    -webkit-appearance: none
+    margin: 0
 </style>
