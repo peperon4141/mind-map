@@ -2,8 +2,8 @@
   path(
     :d="path"
     stroke="black"
-    stroke-width="1"
-    stroke-opacity="0.5"
+    stroke-width="0.8"
+    stroke-opacity="0.8"
     fill="none"
   )
 </template>

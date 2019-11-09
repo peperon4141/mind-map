@@ -9,6 +9,7 @@ const map = {
     groupds: jsonData.groups,
     comments: jsonData.comments,
     defaultStyles: jsonData.defaultStyles,
+    info: jsonData.info,
     history: []
   },
   getters: {
@@ -24,13 +25,23 @@ const map = {
       return parentIds
     },
     map: state => {
-      return {
-        'elem-1': {
-          'elem-2': {},
-          'elem-3': {},
-          'elem-4': {},
-        }
-      }
+      let list = {}
+      Object.keys(state.lines).forEach(lineKey => {
+        const line = state.lines[lineKey]
+        list[line.from] = list[line.from] || {}
+        list[line.to] = list[line.to] || {}
+        list[line.from][line.to] = list[line.to]
+      })
+      return list
+      // console.log(list[state.info.root])
+      
+      // return {
+      //   'elem-1': {
+      //     'elem-2': {},
+      //     'elem-3': {},
+      //     'elem-4': {},
+      //   }
+      // }
     }
   },
   mutations: {
@@ -44,7 +55,6 @@ const map = {
       }
     },
     create(state, payload) {
-      console.log(`----------create--${JSON.stringify(payload)}`)
       const from = payload.from
       const parentElem = state.elements[from]
       const elemId = `elem-${Math.random().toString(32).substring(2, 8)}`
@@ -57,7 +67,8 @@ const map = {
       const newLine = { from: from, to: elemId }
       state.history.push({
         type: 'create',
-        elems: [newElem, newLine ]
+        elem: newElem,
+        line: newLine
       })
       Vue.set(state.elements, elemId, newElem)
       Vue.set(state.lines, lineId, newLine)

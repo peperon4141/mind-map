@@ -1,11 +1,16 @@
 <template>
-  <g @mousedown="click" :id="id">
+  <g
+    :id="id"
+    @mousedown="click"
+    @mouseover="over"
+    ref="rect"
+  >
     <rect
       :id="id"
       :x="position.x" :y="position.y"
-      rx="3" ry="3"
+      rx="1" ry="1"
       :width="size.x" :height="size.y"
-      stroke="black" stroke-widthidth="1" stroke-opacity="0.5"
+      stroke="black" stroke-width="0.3" stroke-opacity="1.0"
       fill="#B3E5FC" fill-opacity="1"
       stroke-dasharray="0" stroke-dashoffset="0"
     />
@@ -57,6 +62,17 @@ export default {
       console.log(`--click----${this.id}`)
       e['id'] = this.id
       this.$emit('click', e)
+      const rect = this.$refs.rect
+      const pos = rect.getBoundingClientRect()
+      // let div = document.querySelector('div#hoverItem')
+      // div.style.left = `${pos.left - 4}px`
+      // div.style.top = `${pos.top - 4}px`
+      // div.style.width = `${pos.width}px`
+      // div.style.height = `${pos.height}px`
+      // console.log({ x: rect.clientLeft, y: rect.clientTop })
+      // console.log({ width: rect.clientWidth, height: rect.clientHeight })
+    },
+    over (e) {
     }
   },
   mounted: function() {
@@ -64,3 +80,11 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+g
+  cursor: pointer
+  rect
+    &:hover
+      fill: green
+</style>

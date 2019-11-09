@@ -1,7 +1,7 @@
 <template lang="pug">
 #numinput.vinput
   span.title {{title}}
-  input.input(
+  input.input.reactive(
     type="range"
     v-model="updateValue"
     :min="option.min"
@@ -48,20 +48,17 @@ export default {
     appearance: none
     height: 2px
     width: 80px
-    background-color: var(--darkColor)
+    background-color: var(--background)
     border-radius: 1px
-    &:focus, &:active
-      outline: none
     &::-webkit-slider-thumb
       appearance: none
       cursor: pointer
       position: relative
-      width: 12px
-      height: 12px
+      width: 16px
+      height: 16px
       display: block
-      background-color: var(--lightColor)
+      background-color: var(--accent)
       border-radius: 2px
   #vinput
     flex-grow: 1
-    // min-width: 80px
 </style>

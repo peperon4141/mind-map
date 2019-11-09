@@ -1,5 +1,5 @@
 <template>
-
+<h1>home</h1>
 </template>
 
 <script>
@@ -31,7 +31,6 @@ body {
   left: 0;
   z-index: 100; /* Behind the navbar */
   padding: 48px 0 0; /* Height of navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
 .sidebar-sticky {
@@ -97,7 +96,6 @@ body {
   padding-bottom: .75rem;
   font-size: 1rem;
   background-color: rgba(0, 0, 0, .25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
 }
 
 .navbar .form-control {
@@ -109,11 +107,10 @@ body {
 .form-control-dark {
   color: #fff;
   background-color: rgba(255, 255, 255, .1);
-  border-color: rgba(255, 255, 255, .1);
+  /* border-color: rgba(255, 255, 255, .1); */
 }
 
 .form-control-dark:focus {
   border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 </style>

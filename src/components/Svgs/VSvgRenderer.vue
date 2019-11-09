@@ -10,8 +10,13 @@
       @mousemove="onMouseMoveHandler"
       @mouseleave="onMouseEndHandler"
       @mouseup="onMouseEndHandler"
+      id="mainSvg"
       ref="svg"
     )
+      //- filter#drop-shadow
+      //-   feGaussianBlur(result="blurOut" in="offOut" stdDeviation="10")
+      //-   feBlend(in="SourceGraphic" in2="blurOut" mode="normal")
+      //-   //- feGaussianBlur(in="SourceAlpha" stdDeviation='10')
       vpath(
         v-for="(line, key) in allLines"
         :key="key"
@@ -33,11 +38,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import store from '@/store'
-
-// type Point = {
-//   x: number
-//   y: number
-// }
 
 export default {
   components: {

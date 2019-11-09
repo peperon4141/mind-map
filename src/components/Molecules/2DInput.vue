@@ -1,10 +1,10 @@
 <template lang="pug">
 #twodinput.vinput
   span.title {{title}}
-  .button(@click="showPopUp" style="position: relative;")
+  .button.reactive(@click="showPopUp" style="position: relative;")
     svg(xmlns="http://www.w3.org/2000/svg" width="20px" height="20px")
-      path(d="M10 3 V15" stroke="var(--darkerColor)" stroke-width="1.5" stroke-linecap="round")
-      path(d="M4 9 H16" stroke="var(--darkerColor)" stroke-width="1.5" stroke-linecap="round")
+      path(d="M10 3 V15" stroke="var(--main)" stroke-width="1.5" stroke-linecap="round")
+      path(d="M4 9 H16" stroke="var(--main)" stroke-width="1.5" stroke-linecap="round")
     popup(v-if="show" @close="show=false" :top="popupPosition.top" :left="popupPosition.left")
       .panel(
         @mousedown.self="onDown"
@@ -117,10 +117,10 @@ export default {
 @import "@/assets/InputComponents.sass"
 #twodinput.vinput
   .button
-    background-color: var(--lightColor)
+    background-color: var(--accent)
     flex-basis: 20px
-    height: 24px
     border-radius: 2px
+    box-shadow: 0 0 2px 0 var(--shadow)
     svg
       position: static
       width: 20px
@@ -131,11 +131,12 @@ export default {
       height: 6px
       border-radius: 100%
       background-color: black
+
   #vinput
     flex-grow: 1
-  .panel
-    position: static
-    width: 176px
-    height: 176px
-    background-color: var(--lightColor)
+  // .panel
+  //   position: static
+  //   width: 176px
+  //   height: 176px
+  //   background-color: var(--accent)
 </style>

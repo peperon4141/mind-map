@@ -1,6 +1,6 @@
 <template lang="pug">
 #vbutton.vinput
-  .title(@click="click") {{title}}
+  .title.reactive(@click="click") {{title}}
 </template>
 
 <script>
@@ -20,9 +20,10 @@ export default {
 @import "@/assets/InputComponents.sass"
 #vbutton.vinput
   .title
-    color: var(--darkerColor)
-    background-color: var(--lightColor)
+    color: var(--main)
+    background-color: var(--accent)
     border-radius: 2px
     flex-grow: 1
     text-align: center
+    box-shadow: 0 0 2px 0 var(--shadow)
 </style>

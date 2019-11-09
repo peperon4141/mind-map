@@ -5,12 +5,12 @@
   "elements": {
     "elem-1": {
       "position": { "x": 50, "y": 40 },
-      "text": "main",
+      "text": "#main",
       "size": { "x": 100, "y": 24 }
     },
     "elem-2": {
       "position": { "x": 200, "y": 80 },
-      "text": "aaa2",
+      "text": "#text1",
       "size": { "x": 100, "y": 24 }
     },
     "elem-3": {
@@ -22,12 +22,18 @@
       "position": { "x": 200, "y": 160 },
       "text": "ccc",
       "size": { "x": 100, "y": 24 }
+    },
+    "elem-5": {
+      "position": { "x": 350, "y": 160 },
+      "text": "ccc",
+      "size": { "x": 100, "y": 24 }
     }
   },
   "lines": {
     "line-1": { "from": "elem-1", "to": "elem-2" },
     "line-2": { "from": "elem-1", "to": "elem-3" },
-    "line-3": { "from": "elem-1", "to": "elem-4" }
+    "line-3": { "from": "elem-1", "to": "elem-4" },
+    "line-4": { "from": "elem-2", "to": "elem-5" }
   },
   "groups": {
 

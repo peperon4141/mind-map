@@ -2,21 +2,34 @@
 #drawer(:class="{ expanding: expanding }")
   #uppermenu
     #left
-      font-awesome-icon(icon="map-marker-alt")
-      font-awesome-icon(icon="search-plus")
-      font-awesome-icon(icon="search-minus")
-      .separater
-      font-awesome-icon(icon="border-all")
+      font-awesome-icon.icon.reactive(icon="map-marker-alt")
+      font-awesome-icon.icon.reactive(icon="search-plus")
+      font-awesome-icon.icon.reactive(icon="search-minus")
+      separater
+      font-awesome-icon.icon.reactive(icon="undo-alt")
+      font-awesome-icon.icon.reactive(icon="redo-alt")
+      separater
+      font-awesome-icon.icon.reactive(icon="border-all")
+      separater
+      font-awesome-icon.icon.reactive(icon="sort-amount-down")
+      font-awesome-icon.icon.reactive(icon="sort-amount-up")
+      separater
+      font-awesome-icon.icon.reactive(icon="sort-alpha-down")
+      font-awesome-icon.icon.reactive(icon="sort-alpha-up")
+    #center
     #right
-      //- font-awesome-icon(icon="expand-arrows-alt")
-      //- .separater
+      font-awesome-icon.icon.reactive(
+        icon="file-download"
+        @mousedown="download"
+      )
+      separater
       template
-        font-awesome-icon(
+        font-awesome-icon.icon.reactive(
           v-if="expanding"
           icon="compress-arrows-alt"
           @mousedown="expanding = false"
         )
-        font-awesome-icon(
+        font-awesome-icon.icon.reactive(
           v-else
           icon="expand-arrows-alt"
           @mousedown="expanding = true"
@@ -31,16 +44,16 @@
         path(
           v-for="num of 100" :key="`v-${num}`"
           :d="`M ${10 * num} 0 V1000`"
-          stroke="var(--darkerColor)"
+          stroke="var(--accent)"
           :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
-          stroke-opacity="0.3"
+          stroke-opacity="0.4"
         )
         path(
           v-for="num of 100" :key="`h-${num}`"
           :d="`M 0 ${10 * num} H1000`"
-          stroke="var(--darkerColor)"
+          stroke="var(--accent)"
           :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
-          stroke-opacity="0.3"
+          stroke-opacity="0.4"
         )
     vsvgrenderer
     inputwrapper
@@ -56,10 +69,13 @@
       vbutton(title="insert" @click="click")
   #lowermenu
     #left
-      font-awesome-icon(icon="map-marker-alt")
-      font-awesome-icon(icon="search-plus")
-      font-awesome-icon(icon="search-minus")
+      font-awesome-icon.icon.reactive(icon="map-marker-alt")
+      font-awesome-icon.icon.reactive(icon="search-plus")
+      font-awesome-icon.icon.reactive(icon="search-minus")
+    #center
+      span All rights reserved Soichiro.
     #right
+      font-awesome-icon.icon.reactive(:icon="['far','star']")
 </template>
 
 <script>
@@ -87,6 +103,25 @@ export default {
         from: this.currentId
       })
     },
+    download(e){
+      var svg = document.querySelector("svg#mainSvg");
+      var svgData = new XMLSerializer().serializeToString(svg);
+      var canvas = document.createElement("canvas");
+      canvas.width = svg.width.baseVal.value;
+      canvas.height = svg.height.baseVal.value;
+
+      var ctx = canvas.getContext("2d");
+      var image = new Image;
+      image.onload = function(){
+          ctx.drawImage( image, 0, 0 );
+          var a = document.createElement("a");
+          document.body.appendChild(a);
+          a.href = canvas.toDataURL("image/png");
+          a.setAttribute("download", "image.png");
+          a.dispatchEvent(new CustomEvent("click"));
+      }
+      image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData))); 
+    }
   },
   components: {
     inputwrapper: () => import('@/components/Atoms/InputWrapper.vue'),
@@ -99,6 +134,8 @@ export default {
     vbutton: () => import('@/components/Molecules/VButton.vue'),
 
     vsvgrenderer: () => import('@/components/Svgs/VSvgRenderer.vue'),
+
+    separater: () => import('@/icons/separater.vue'),
   }
 }
 </script>
@@ -106,13 +143,12 @@ export default {
 <style lang="sass" scoped >
 #drawer
   position: relative
-  margin: 8px
-  box-shadow: 0 0 8px -2px var(--darkestColor)
+  margin: 16px
+  background-color: var(--main)
+  box-shadow: 0 0 2px 0 var(--shadow)
   border-radius: 4px
-  background-color: var(--lightestColor)
-  // height: 80%
-  // transition: all 0.3s ease
-  // transition: transform 0.2s linear 0s
+  transition: all 0.2s ease-out 0s
+  z-index: 100
   &.expanding
     position: absolute !important
     margin: 0 !important
@@ -122,37 +158,43 @@ export default {
     width: 100% !important
     height: 100% !important
     // transition: all 0.3s ease
-    transition: all 0.2s linear 0s
+    transition: all 0.2s ease-out 0s
   #uppermenu, #lowermenu
     display: flex
-    justify-content: space-between
     padding: 0 4px
     height: 40px
-    #left, #right
+    background-color: var(--sub)
+    #left, #right, #center
       display: flex
       align-items: center
       > *
-        color: var(--middleColor)
+        color: var(--accent)
         margin: 0 8px
       > .separater
         width: 1px
         height: 24px
         // margin-top: 4px
         border-radius: 50%
-        background-color: var(--middleColor)
+        background-color: var(--accent)
         opacity: 0.3
+    #center
+      margin: auto
+    .icon
+      opacity: 0.8
+      &:hover
+        opacity: 1.0
   #uppermenu
     border-radius: 4px 4px 0 0
-    border-bottom: 1px solid var(--middleColor)
+    border-bottom: 1px solid var(--accent)
   #lowermenu
     border-radius: 0 0 4px 4px
-    border-top: 1px solid var(--middleColor)
+    border-top: 1px solid var(--accent)
   #canvas
     position: relative
     height: calc(100% - 80px)
     #background
       overflow: hidden
-      background-color: var(--lightestColor)
+      background-color: var(--main)
       width: 100%
       height: 100%
       position: absolute
@@ -167,6 +209,5 @@ export default {
       height: 100%
       position: absolute
       top: 0
-      left: 0
-    
+      left: 0    
 </style>

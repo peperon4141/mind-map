@@ -32,11 +32,12 @@ export default {
 input#vinput
   width: 100%
   height: 100%
-  color: var(--lightColor)
-  background-color: var(--darkColor)
+  color: var(--accent)
+  background-color: var(--main)
   border: none
   border-radius: 2px
   padding: 0 4px
+  border: 1px solid var(--background)
   &:focus, &:active
     outline: none
   &::-webkit-outer-spin-button, &::-webkit-inner-spin-button

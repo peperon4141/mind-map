@@ -1,8 +1,11 @@
 <template lang="pug">
 #editor(:style="styles")
-  sidebar
-  drawer
-  vfooter
+  headerbar
+  main
+    sidebar
+    //- #hoverItem(style="position: absolute; z-index: 1000; width: 10px; height: 10px; border: 1px solid red; box-sizing: content-box; padding: 3px")
+    drawer
+  //- footerbar
 </template>
 
 <script>
@@ -13,24 +16,55 @@ export default {
   },
   computed: {
     styles () {
-      return {
-        '--width': '300px',
-        '--lightColor': 'rgb(200,216,216)',
-        '--lighterColor': 'rgb(248,255,255)',
-        '--lightestColor': 'rgb(255,255,255)',
-        '--middleColor': 'rgb(92,108,108)',
-        '--darkColor': 'rgb(48, 64, 64)',
-        '--darkerColor': 'rgb(16, 32, 32)',
-        '--darkestColor': 'rgb(0, 16, 16)',
+      let styles = {}
+      styles['--width'] = '300px'
+      styles['--brand'] = 'rgb(255, 200, 1)'
+      styles['--shadow'] = 'rgb(80, 96, 96)'
+      
+      switch(this.$store.state.project.mode) {
+        case 1:
+          // dark
+          styles['--background'] = 'rgb(40, 56, 56)'
+          styles['--main'] = 'rgb(16, 24, 24)'
+          styles['--sub'] = 'rgb(32, 48, 48)'
+          styles['--accent'] = 'rgb(192, 216, 216)'
+          styles['--trans'] = 'rgba(80, 96, 96, 0.8)'
+          break
+        case 2:
+          // bluePrint
+          styles['--background'] = 'rgb(27, 59, 89)'
+          styles['--main'] = 'rgb(45, 92, 123)'
+          styles['--trans'] = 'rgb(192, 216, 216, 0.4)'
+          styles['--sub'] = 'rgb(37, 80, 110)'
+          styles['--accent'] = 'rgb(192, 216, 216)'
+          break
+        case 3:
+          // fool
+          styles['--background'] = 'rgb(255, 200, 1)'
+          styles['--main'] = 'rgb(255, 200, 1)'
+          styles['--trans'] = 'rgb(200, 200, 200, 0.5)'
+          styles['--sub'] = 'rgb(255, 200, 1)'
+          styles['--accent'] = 'rgb(0, 123, 255)'
+          break
+        default:
+          // light
+          styles['--background'] = 'rgb(200, 216, 216)'
+          styles['--main'] = 'rgb(255, 255, 255)'
+          styles['--trans'] = 'rgba(216, 232, 232, 0.5)'
+          // styles['--sub'] = 'rgb(216, 216, 216)'
+          styles['--sub'] = 'rgb(252,254,254)'
+          styles['--accent'] = 'rgb(21, 51, 65)'
+          // styles['--accent'] = 'rgb(144, 160, 160)'
       }
+      return styles
     }
   },
   methods: {
   },
   components: {
-    vnavbar: () => import('@/components/Organisms/VNavBar.vue'),
+    headerbar: () => import('@/components/Organisms/HeaderBar.vue'),
     sidebar: () => import('@/components/Organisms/SideBar.vue'),
-    vfooter: () => import('@/components/Organisms/VFooter.vue'),
+    footerbar: () => import('@/components/Organisms/FooterBar.vue'),
 
     drawer: () => import('@/components/Panes/Drawer.vue'),
   }
@@ -38,10 +72,22 @@ export default {
 </script>
 
 <style lang="sass" scoped >
+$header-height: 40px
+$footer-height: 24px
+
 #editor
   height: 100%
-  background-color: var(--lighterColor)
   display: flex
-  /deep/ #drawer
+  flex-direction: column
+  background-color: var(--brand)
+  /deep/ #headerbar
+    height: $header-height
+  main
     flex-grow: 1
+    background-color: var(--background)
+    display: flex
+    /deep/ #drawer
+      flex-grow: 1
+  /deep/ #footerbar
+    height: $footer-height
 </style>

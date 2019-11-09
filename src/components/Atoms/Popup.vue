@@ -18,7 +18,7 @@ export default {
 <style lang="sass">
 #popup
   position: absolute
-  background-color: var(--darkerColor)
+  background-color: var(--main)
   padding: 20px
   border-radius: 4px
   z-index: 100

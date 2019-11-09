@@ -1,18 +1,19 @@
+$height: 28px
+$padding: 8px
+
 .vinput
-  background-color: var(--darkerColor)
   display: flex
-  padding: 4px
+  padding: $padding
   align-items: center
-  height: 25px
+  height: $height + $padding * 2
   width: var(--width)
   > *
     box-sizing: content-box
     font-weight: 200
-    height: 20px
-    max-height: 20px
-    line-height: 20px
-    margin: 0 2px
-    color: var(--middleColor)
+    height: $height
+    max-height: $height
+    line-height: $height
+    margin: 0 4px
+    color: var(--accent)
   > .title
-    color: var(--lightColor)
-    min-width: 72px
+    min-width: 64px
