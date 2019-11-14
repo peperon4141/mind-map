@@ -13,6 +13,8 @@
   padding-bottom: 4px
   width: var(--width)
   box-shadow: 0 0 2px 0 var(--shadow)
+  cursor: default
+  z-index: 200
   > div:first-of-type
     border-radius: 4px 4px 0 0 
   > div:last-of-type

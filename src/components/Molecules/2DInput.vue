@@ -49,8 +49,8 @@ export default {
     },
   },
   mounted: function() {
-    window.onmouseup = this.onUp
-    window.onclick = this.onUp
+    window.addEventListener('mouseup', this.onUp)
+    window.addEventListener('click', this.onUp)
   },
   methods: {
     showPopUp: function(e) {
@@ -134,9 +134,10 @@ export default {
 
   #vinput
     flex-grow: 1
-  // .panel
-  //   position: static
-  //   width: 176px
-  //   height: 176px
-  //   background-color: var(--accent)
+  .panel
+    position: static
+    width: 176px
+    height: 176px
+    background-color: var(--accent)
+    z-index: 300
 </style>

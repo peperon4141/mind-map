@@ -3,9 +3,7 @@
   headerbar
   main
     sidebar
-    //- #hoverItem(style="position: absolute; z-index: 1000; width: 10px; height: 10px; border: 1px solid red; box-sizing: content-box; padding: 3px")
     drawer
-  //- footerbar
 </template>
 
 <script>
@@ -86,6 +84,7 @@ $footer-height: 24px
     flex-grow: 1
     background-color: var(--background)
     display: flex
+    height: 100%
     /deep/ #drawer
       flex-grow: 1
   /deep/ #footerbar

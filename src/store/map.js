@@ -10,7 +10,10 @@ const map = {
     comments: jsonData.comments,
     defaultStyles: jsonData.defaultStyles,
     info: jsonData.info,
-    history: []
+    history: [],
+    size: { x: 2000, y: 2000 },
+    view: { x: 800, y: 800 },
+    offset: { x: 0, y: 0 }
   },
   getters: {
     allElements: state => state.elements,
@@ -21,7 +24,7 @@ const map = {
     },
     currentId: state => state.currentId,
     parents: state => {
-      const parentIds = state.lines.map( line => line.from )
+      const parentIds = Object.keys(state.lines).map( key => state.lines[key].from )
       return parentIds
     },
     map: state => {
@@ -47,6 +50,10 @@ const map = {
   mutations: {
     setCurrent(state, id) {
       state.currentId = id
+    },
+    update(state, payload) {
+      // console.log(payload)
+      Vue.set(state, payload.key, payload.value)
     },
     updateElementPosition(state, payload) {
       let targetElem = state.elements[payload.id]

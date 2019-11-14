@@ -4,12 +4,12 @@
     font-awesome-icon.icon.reactive(
       v-for="item in menus"
       :key="item.name"
-      :class="{active: item.name === current.name, [item.name]: true}"
+      :class="{active: (current && item.name === current.name), [item.name]: true}"
       @click="click(item)"
       :icon="item.icon"
     )
   #contents(v-show="showContents")
-    .menu(v-if="'overview' === current.name")
+    .menu(v-if="current && 'overview' === current.name")
       inputtitle(title="overview")
       .scrollBox
         div(
@@ -18,7 +18,7 @@
         )
           font-awesome-icon.icon.reactive(icon="chevron-right")
           span {{ allElements[item.id].text }}
-    .menu(v-if="'history' === current.name")
+    .menu(v-if="current && 'history' === current.name")
       inputtitle(title="history")
       div(
         v-for="history in allHistory"
@@ -26,10 +26,8 @@
       )
         font-awesome-icon.icon.reactive(icon="chevron-right")
         span {{history.type}} {{ history.elem.text }}
-    .menu(v-if="'file' === current.name")
+    .menu(v-if="current && 'file' === current.name")
       inputtitle(title="file")
-    .menu(v-if="'setting' === current.name")
-      inputtitle(title="setting")
 </template>
 
 <script>
@@ -50,7 +48,6 @@ export default {
         { name: 'overview', icon: 'align-justify' },
         { name: 'history', icon: 'history' },
         { name: 'file', icon: 'file-export' },
-        { name: 'setting', icon: 'cog' },
       ],
       current: null,
       showContents: true
@@ -90,6 +87,7 @@ export default {
     click(nextMenu) {
       // console.log(this.map)
       if (this.current === nextMenu) {
+        this.current = null
         this.showContents = !this.showContents
       } else {
         this.current = nextMenu
@@ -118,7 +116,6 @@ export default {
     background-color: var(--sub)
     align-items: center
     // box-shadow: 0 0 2px 0 var(--shadow)
-    border-right: 1px solid var(--accent)
     .icon
       box-sizing: content-box
       color: var(--accent)
@@ -126,8 +123,6 @@ export default {
       height: 24px
       padding: 11px
       opacity: 0.8
-      &.setting
-        margin-top: auto
       &.active
         border-left: 2px solid var(--accent)
       // &.active
@@ -138,6 +133,7 @@ export default {
       //   transition-duration: 0.3s
   #contents
     width: 240px
+    border-left: 1px solid var(--accent)
     .menu
       > *
         width: 100%

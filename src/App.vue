@@ -3,6 +3,22 @@
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      event: null
+    }
+  },
+  mounted() {
+    this.event = new CustomEvent("mouseupleave")
+    document.addEventListener("mouseup", e => document.dispatchEvent(this.event))
+    document.addEventListener("mouseleave", e => document.dispatchEvent(this.event))
+
+    this.event = new CustomEvent("mouseupleave")
+    document.addEventListener("mouseup", e => document.dispatchEvent(this.event))
+    document.addEventListener("mouseleave", e => document.dispatchEvent(this.event))
+  }
+}
 </script>
 
 <style lang="sass">

@@ -1,8 +1,8 @@
 <template>
   <g
     :id="id"
-    @mousedown="click"
-    @mouseover="over"
+    @mousedown="onDown"
+    @mouseover="onOver"
     ref="rect"
   >
     <rect
@@ -58,10 +58,11 @@ export default {
     },
   },
   methods: {
-    click (e) {
-      console.log(`--click----${this.id}`)
-      e['id'] = this.id
-      this.$emit('click', e)
+    onDown (e) {
+      // console.log(`--click----${this.id}`)
+      const event = e.hasOwnProperty('changedTouches') ? e.changedTouches[0] : e
+      event['id'] = this.id
+      this.$emit('mousedown', event)
       const rect = this.$refs.rect
       const pos = rect.getBoundingClientRect()
       // let div = document.querySelector('div#hoverItem')
@@ -72,7 +73,7 @@ export default {
       // console.log({ x: rect.clientLeft, y: rect.clientTop })
       // console.log({ width: rect.clientWidth, height: rect.clientHeight })
     },
-    over (e) {
+    onOver (e) {
     }
   },
   mounted: function() {

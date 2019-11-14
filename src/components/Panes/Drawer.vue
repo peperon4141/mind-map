@@ -2,10 +2,6 @@
 #drawer(:class="{ expanding: expanding }")
   #uppermenu
     #left
-      font-awesome-icon.icon.reactive(icon="map-marker-alt")
-      font-awesome-icon.icon.reactive(icon="search-plus")
-      font-awesome-icon.icon.reactive(icon="search-minus")
-      separater
       font-awesome-icon.icon.reactive(icon="undo-alt")
       font-awesome-icon.icon.reactive(icon="redo-alt")
       separater
@@ -27,41 +23,21 @@
         font-awesome-icon.icon.reactive(
           v-if="expanding"
           icon="compress-arrows-alt"
-          @mousedown="expanding = false"
+          @mousedown="expandView(false)"
         )
         font-awesome-icon.icon.reactive(
           v-else
           icon="expand-arrows-alt"
-          @mousedown="expanding = true"
+          @mousedown="expandView(true)"
         )
-  #canvas
-    #background
-      svg(
-        xmlns="http://www.w3.org/2000/svg"
-        data-v-03e17f23
-        font-family="sans-serif"
-      )
-        path(
-          v-for="num of 100" :key="`v-${num}`"
-          :d="`M ${10 * num} 0 V1000`"
-          stroke="var(--accent)"
-          :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
-          stroke-opacity="0.4"
-        )
-        path(
-          v-for="num of 100" :key="`h-${num}`"
-          :d="`M 0 ${10 * num} H1000`"
-          stroke="var(--accent)"
-          :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
-          stroke-opacity="0.4"
-        )
-    vsvgrenderer
+  #canvas(ref="canvas")
+    svgcanvas(:view="view" :size="size" :offset="offset")
     inputwrapper
       inputtitle(title="view")
       numinput(v-model="space" title="space")
       //- inputseperater(:line="true")
       twodinput(v-model="offset" title="offset" :option="{ x: {min: -300, max: 300, step: 1}, y: {min: -300, max: 300, step: 1} }")
-      twodinput(v-model="size" title="size" :option="{ x: {min: 400, max: 1000, step: 1}, y: {min: 400, max: 1000, step: 1} }")
+      twodinput(v-model="size" title="size" :option="{ x: {min: 400, max: 2000, step: 1}, y: {min: 400, max: 2000, step: 1} }")
       textinput(v-model="string" title="string")
       inputtitle(title="map")
       vbutton(title="create" @click="click")
@@ -70,8 +46,8 @@
   #lowermenu
     #left
       font-awesome-icon.icon.reactive(icon="map-marker-alt")
-      font-awesome-icon.icon.reactive(icon="search-plus")
-      font-awesome-icon.icon.reactive(icon="search-minus")
+      font-awesome-icon.icon.reactive(icon="search-plus" @mousedown="expand")
+      font-awesome-icon.icon.reactive(icon="search-minus" @mousedown="shrink")
     #center
       span All rights reserved Soichiro.
     #right
@@ -85,19 +61,56 @@ import { mapGetters } from 'vuex'
 export default {
   data: () => {
     return {
-      offset: {x: 0, y: 0},
-      size: {x: 800, y: 600},
       space: 20,
       string: 'sample',
       expanding: false,
+      resizeEvent: null
     }
   },
   computed: {
     ...mapGetters([
       'currentId'
-    ])
+    ]),
+    size() { return this.$store.state.map.size },
+    view() { return this.$store.state.map.view },
+    offset() { return this.$store.state.map.offset },
+  },
+  mounted() {
+    this.resizeEvent = new CustomEvent('custom-resize')
+    window.addEventListener('resize', e => this.updateRect())
+    this.$refs.canvas.addEventListener('custom-resize', e => this.updateRect())
+    this.$refs.canvas.dispatchEvent(this.resizeEvent)
   },
   methods: {
+    expand() {
+      const newX = this.view.x - 20
+      const newY = this.view.y - 20
+      if (newX <= 200 || newY <= 200) return
+      store.commit('update', { key: 'view', value: { x: newX, y: newY } })
+    },
+    shrink() {
+      const newX = this.view.x + 20
+      const newY = this.view.y + 20
+      if (this.size.x <= newX || this.size.y <= newY) return
+      store.commit('update', { key: 'view', value: { x: newX, y: newY } })
+    },
+    expandView(expand) {
+      this.expanding = expand
+      this.$refs.canvas.dispatchEvent(this.resizeEvent)
+      setTimeout(() => {
+        this.updateRect()
+        setTimeout(() => {
+          this.updateRect()
+        },100)
+      }, 100);
+    },
+    updateRect() {
+      const { width, height } = this.$refs.canvas.getBoundingClientRect()
+      this.$store.commit('update', {
+        key: 'view',
+        value: { x: width, y: height }
+      })
+    },
     click(e) {
       store.commit('create', {
         from: this.currentId
@@ -133,7 +146,8 @@ export default {
     inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
     vbutton: () => import('@/components/Molecules/VButton.vue'),
 
-    vsvgrenderer: () => import('@/components/Svgs/VSvgRenderer.vue'),
+    svgcanvas: () => import('@/components/Svgs/SvgCanvas.vue'),
+    mapcanvas: () => import('@/components/Svgs/MapCanvas.vue'),
 
     separater: () => import('@/icons/separater.vue'),
   }
@@ -149,6 +163,7 @@ export default {
   border-radius: 4px
   transition: all 0.2s ease-out 0s
   z-index: 100
+  overflow: hidden
   &.expanding
     position: absolute !important
     margin: 0 !important
@@ -173,7 +188,6 @@ export default {
       > .separater
         width: 1px
         height: 24px
-        // margin-top: 4px
         border-radius: 50%
         background-color: var(--accent)
         opacity: 0.3
@@ -192,22 +206,14 @@ export default {
   #canvas
     position: relative
     height: calc(100% - 80px)
-    #background
-      overflow: hidden
-      background-color: var(--main)
-      width: 100%
-      height: 100%
-      position: absolute
-      top: 0
-      left: 0
-      svg
-        width: 100%
-        height: 100%
-    /deep/ #vsvgrenderer
-      overflow: hidden
-      width: 100%
-      height: 100%
-      position: absolute
-      top: 0
-      left: 0    
+    display: flex
+    flex-direction: row
+    /deep/ #svgcanvas
+      flex-grow: 1
+      // overflow: hidden
+      // width: 100%
+      // height: 100%
+      // position: absolute
+      // top: 0
+      // left: 0
 </style>
