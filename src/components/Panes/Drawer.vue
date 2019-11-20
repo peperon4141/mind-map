@@ -2,8 +2,8 @@
 #drawer(:class="{ expanding: expanding }")
   #uppermenu
     #left
-      font-awesome-icon.icon.reactive(icon="undo-alt")
-      font-awesome-icon.icon.reactive(icon="redo-alt")
+      font-awesome-icon.icon.reactive(icon="undo-alt" v-tooltip="{content: 'undo'}")
+      font-awesome-icon.icon.reactive(icon="redo-alt" v-tooltip="{content: 'redo'}")
       separater
       font-awesome-icon.icon.reactive(icon="border-all")
       separater
@@ -31,18 +31,8 @@
           @mousedown="expandView(true)"
         )
   #canvas(ref="canvas")
-    svgcanvas(:view="view" :size="size" :offset="offset")
-    inputwrapper
-      inputtitle(title="view")
-      numinput(v-model="space" title="space")
-      //- inputseperater(:line="true")
-      twodinput(v-model="offset" title="offset" :option="{ x: {min: -300, max: 300, step: 1}, y: {min: -300, max: 300, step: 1} }")
-      twodinput(v-model="size" title="size" :option="{ x: {min: 400, max: 2000, step: 1}, y: {min: 400, max: 2000, step: 1} }")
-      textinput(v-model="string" title="string")
-      inputtitle(title="map")
-      vbutton(title="create" @click="click")
-      vbutton(title="delete" @click="click")
-      vbutton(title="insert" @click="click")
+    mapcanvas(:view="view" :size="size" :offset="offset")
+    //- this.$store.state.map.currentId//-   vbutton(title="insert" @click="click")
   #lowermenu
     #left
       font-awesome-icon.icon.reactive(icon="map-marker-alt")
@@ -56,7 +46,7 @@
 
 <script>
 import store from '@/store'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   data: () => {
@@ -68,12 +58,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'currentId'
-    ]),
-    size() { return this.$store.state.map.size },
-    view() { return this.$store.state.map.view },
-    offset() { return this.$store.state.map.offset },
+    ...mapState( 'map', [ 'size', 'view', 'offset', 'currentId' ] ),
+    ...mapState( 'user', [ 'scale' ] ),
   },
   mounted() {
     this.resizeEvent = new CustomEvent('custom-resize')
@@ -83,16 +69,25 @@ export default {
   },
   methods: {
     expand() {
-      const newX = this.view.x - 20
-      const newY = this.view.y - 20
-      if (newX <= 200 || newY <= 200) return
-      store.commit('update', { key: 'view', value: { x: newX, y: newY } })
+      const scale = this.scale
+      store.commit('user/update', {
+        scale: Math.max(0.5, scale + 0.1)
+      })
+      // transform: scale(2, 2)
+      // const newX = this.view.x - 20
+      // const newY = this.view.y - 20
+      // if (newX <= 200 || newY <= 200) return
+      // store.commit('update', { key: 'view', value: { x: newX, y: newY } })
     },
     shrink() {
-      const newX = this.view.x + 20
-      const newY = this.view.y + 20
-      if (this.size.x <= newX || this.size.y <= newY) return
-      store.commit('update', { key: 'view', value: { x: newX, y: newY } })
+      const scale = this.scale
+      store.commit('user/update', {
+        scale: Math.min(2, scale - 0.1)
+      })
+      // const newX = this.view.x + 20
+      // const newY = this.view.y + 20
+      // if (this.size.x <= newX || this.size.y <= newY) return
+      // store.commit('update', { key: 'view', value: { x: newX, y: newY } })
     },
     expandView(expand) {
       this.expanding = expand
@@ -106,34 +101,34 @@ export default {
     },
     updateRect() {
       const { width, height } = this.$refs.canvas.getBoundingClientRect()
-      this.$store.commit('update', {
+      this.$store.commit('map/update', {
         key: 'view',
         value: { x: width, y: height }
       })
     },
     click(e) {
-      store.commit('create', {
+      store.commit('map/create', {
         from: this.currentId
       })
     },
     download(e){
-      var svg = document.querySelector("svg#mainSvg");
-      var svgData = new XMLSerializer().serializeToString(svg);
-      var canvas = document.createElement("canvas");
-      canvas.width = svg.width.baseVal.value;
-      canvas.height = svg.height.baseVal.value;
+      var svg = document.querySelector("svg#mainSvg")
+      var svgData = new XMLSerializer().serializeToString(svg)
+      var canvas = document.createElement("canvas")
+      canvas.width = svg.width.baseVal.value
+      canvas.height = svg.height.baseVal.value
 
-      var ctx = canvas.getContext("2d");
-      var image = new Image;
+      var ctx = canvas.getContext("2d")
+      var image = new Image
       image.onload = function(){
-          ctx.drawImage( image, 0, 0 );
-          var a = document.createElement("a");
-          document.body.appendChild(a);
-          a.href = canvas.toDataURL("image/png");
-          a.setAttribute("download", "image.png");
-          a.dispatchEvent(new CustomEvent("click"));
+        ctx.drawImage( image, 0, 0 )
+        var a = document.createElement("a")
+        document.body.appendChild(a)
+        a.href = canvas.toDataURL("image/png")
+        a.setAttribute("download", "image.png")
+        a.dispatchEvent(new CustomEvent("click"))
       }
-      image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData))); 
+      image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)))
     }
   },
   components: {
@@ -146,7 +141,7 @@ export default {
     inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
     vbutton: () => import('@/components/Molecules/VButton.vue'),
 
-    svgcanvas: () => import('@/components/Svgs/SvgCanvas.vue'),
+    // svgcanvas: () => import('@/components/Svgs/SvgCanvas.vue'),
     mapcanvas: () => import('@/components/Svgs/MapCanvas.vue'),
 
     separater: () => import('@/icons/separater.vue'),
@@ -210,10 +205,6 @@ export default {
     flex-direction: row
     /deep/ #svgcanvas
       flex-grow: 1
-      // overflow: hidden
-      // width: 100%
-      // height: 100%
-      // position: absolute
-      // top: 0
-      // left: 0
+    /deep/ #mapcanvas
+      flex-grow: 1
 </style>

@@ -17,6 +17,11 @@ export default {
     this.event = new CustomEvent("mouseupleave")
     document.addEventListener("mouseup", e => document.dispatchEvent(this.event))
     document.addEventListener("mouseleave", e => document.dispatchEvent(this.event))
+
+    history.pushState(null, null)
+    window.onpopstate = function(e) {
+      history.pushState(null, null)
+    }
   }
 }
 </script>

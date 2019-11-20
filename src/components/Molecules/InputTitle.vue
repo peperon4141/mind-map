@@ -15,7 +15,7 @@ export default {
 
 <style lang="sass" scoped>
 @import "@/assets/InputComponents.sass"
-#inputtitle.vinput
+#inputtitle
   position: relative
   height: 30px
   background-color: var(--sub)
@@ -23,7 +23,9 @@ export default {
   position: relative
   border-bottom: 1px solid var(--accent)
   // box-shadow: 0 0 2px 0 var(--shadow)
-  z-index: 10
+  // z-index: 10
+  display: flex
+  flex-direction: row
   &:first-of-type
     // box-shadow: 0 4px 4px -4px var(--shadow)
   > *
@@ -32,9 +34,9 @@ export default {
     margin-right: 8px
   > .header
     display: inline-block
-    width: 100%
+    flex-grow: 1
     text-align: center
-    padding-right: 16px
+    // padding-right: 16px
   // > *
   //   color: var(--background)
   // .inputshadow

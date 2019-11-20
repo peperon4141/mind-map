@@ -18,6 +18,7 @@ export default {
       styles['--width'] = '300px'
       styles['--brand'] = 'rgb(255, 200, 1)'
       styles['--shadow'] = 'rgb(80, 96, 96)'
+      styles['--sideBarWidth'] = '240px'
       
       switch(this.$store.state.project.mode) {
         case 1:
@@ -57,7 +58,13 @@ export default {
       return styles
     }
   },
-  methods: {
+  mounted() {
+    this.$store.watch(
+      (state, getters) => getters.prefecture,
+      (newValue, oldValue) => {
+         console.log('prefecture changed! %s => %s', oldValue, newValue)
+      }
+    )
   },
   components: {
     headerbar: () => import('@/components/Organisms/HeaderBar.vue'),
@@ -83,6 +90,7 @@ $footer-height: 24px
   main
     flex-grow: 1
     background-color: var(--background)
+    // background: linear-gradient(var(--main), var(--background))
     display: flex
     height: 100%
     /deep/ #drawer

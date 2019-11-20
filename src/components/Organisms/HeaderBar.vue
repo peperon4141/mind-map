@@ -6,7 +6,7 @@ header#headerbar
     font-awesome-icon.icon.reactive.adjust(
       icon="adjust"
       :style="style"
-      @mousedown="changeMode(mode + 1)"
+      @mousedown="changeMode"
     )
     font-awesome-icon.icon.reactive(icon="bell")
     font-awesome-icon.icon.reactive(icon="cog")
@@ -14,12 +14,12 @@ header#headerbar
 
 <script>
 import store from '@/store'
+import { mapState } from 'vuex'
+
 const modeCount = 4
 export default {
   computed: {
-    mode () {
-      return this.$store.state.project.mode
-    },
+    ...mapState( 'project', [ 'mode' ] ),
     style() {
       return {
         transform: `rotate(${this.mode * (360 / modeCount)}deg)`,
@@ -28,9 +28,8 @@ export default {
     }
   },
   methods: {
-    changeMode (mode) {
-      mode = mode % modeCount
-      this.$store.commit('changeUserSetting', { mode: mode })
+    changeMode() {
+      this.$store.commit('project/update', { mode: (this.mode + 1) % modeCount })
     }
   }
 }

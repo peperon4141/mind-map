@@ -1,13 +1,14 @@
 import Vue from 'vue'
 
 const setting = {
+  namespaced: true,
   state: {
     mode: 0
   },
   getters: {
   },
   mutations: {
-    changeUserSetting(state, payload) {
+    update(state, payload) {
       Object.keys(payload).forEach( key => {
         Vue.set(state, key, payload[key])
       })

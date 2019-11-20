@@ -1,6 +1,5 @@
 <template lang="pug">
   #svgcanvas(
-    contenteditable
   )
     svg#mainSvg(
       font-family="sans-serif"
@@ -22,9 +21,9 @@
         :text="elem.text"
         :size="elem.size"
         @mousedown="onDown"
+        @dblclick="onEditStart"
       )
     svg#background(
-      xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMinYMin"
       font-family="sans-serif"
     )
@@ -32,20 +31,25 @@
         v-for="num of size.x / lineInterval" :key="`v-${num}`"
         :d="`M ${lineInterval * num} 0 V${size.x}`"
         stroke="var(--accent)"
-        :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
+        :stroke-width="(num % 10 === 0) ? 0.6 : 0.3"
         stroke-opacity="0.4"
       )
       path(
         v-for="num of size.y / lineInterval" :key="`h-${num}`"
         :d="`M 0 ${lineInterval * num} H${size.y}`"
         stroke="var(--accent)"
-        :stroke-width="(num % 10 === 0) ? 1.0 : 0.5"
+        :stroke-width="(num % 10 === 0) ? 0.6 : 0.3"
         stroke-opacity="0.4"
       )
-      //- <polyline points="90,60 90,10 140,10"
-      //-     stroke="black" fill="none"
-      //-     stroke-width="20"
-      //-     stroke-linejoin="round" />
+      polyline(
+        v-for="item in hightLighters"
+        :points="item"
+        stroke="var(--accent)" fill="none"
+        stroke-width="2"
+        stroke-opacity="0.4"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+      )
     //- scrollbar.right(
     //-   mode="vertical"
     //-   v-model="offset.y"
@@ -58,6 +62,10 @@
     //-   :length="view.x"
     //-   :max="size.x"
     //- )
+    modal(v-if="editing" @close="onEditEnd")
+      #editor
+        textarea(:value="input" @input="update")
+        div(v-html="compiledMarkdown")
 </template>
 
 <script>
@@ -75,6 +83,8 @@ export default {
       currentId: null,
       rightBtn: { top: '0px', height: '20px' },
       buttomBtn: { left: '0px', width: '20px' },
+      editing: false,
+      input: '# hello'
     }
   },
   props: {
@@ -98,6 +108,9 @@ export default {
 
     const moveCallback = this.onMove.bind(this)
     document.addEventListener('mousemove', moveCallback)
+
+    // new SimpleMDE({ element: document.getElementById("editor") })
+    // var simplemde = new SimpleMDE({ element: document.getElementById("editor") });
   },
   computed: {
     ...mapGetters([
@@ -105,8 +118,26 @@ export default {
       'allElements',
       'allLines'
     ]),
+    compiledMarkdown: function () {
+      return marked(this.input, { sanitize: true })
+    },
+    hightLighters() {
+      console.log('----ffd')
+      const id = store.state.map.currentId
+      if (!id) return []
+      const elem = store.getters.findElement(id)
+      const pos = elem.position
+      const size = elem.size
+      const diff = 5
+      return [
+        [`${pos.x - diff},${pos.y + diff}`,`${pos.x - diff},${pos.y - diff}`,`${pos.x + diff},${pos.y - diff}`].join(' ')
+      ]
+    },
   },
   methods: {
+    update(e) {
+      this.input = e.target.value
+    },
     calcViewBox() {
       return [this.offset.x, this.offset.y, this.view.x, this.view.y].join(', ')
     },
@@ -138,7 +169,7 @@ export default {
     },
     onDown(event) {
       this.dragItem = event.target
-      store.commit('setCurrent', event.id)
+      store.commit('map/setCurrent', event.id)
 
       const p = this.mousePointToSVGPoint(
         this.$refs.svg,
@@ -161,20 +192,30 @@ export default {
         this.dragItem,
         { x: event.clientX, y: event.clientY }
       )
-      const newPosition = {
-        x: p.x - this.dragOffset.x,
-        y: p.y - this.dragOffset.y
-      }
-      const id = this.dragItem.getAttribute('id')
-      store.commit('updateElementPosition', {
-        id: id,
-        position: newPosition
+      store.commit('map/updateElem', {
+        id: this.$store.state.map.currentId,
+        key: 'position',
+        value: {
+          x: p.x - this.dragOffset.x,
+          y: p.y - this.dragOffset.y
+        }
       })
-
       event.preventDefault()
     },
     onUp(e) {
       this.dragItem = null
+    },
+    onEditStart(e) {
+      this.editing = true
+    },
+    onEditEnd(e) {
+      console.log('--------double')
+      this.editing = false
+      this.$store.commit('map/updateElem', {
+        id: this.$store.state.map.currentId,
+        key: 'text',
+        value: this.input
+      })
     },
     mousePointToSVGPoint(svgElement, targetElement, point){
       const svgPoint = svgElement.createSVGPoint()
@@ -185,15 +226,13 @@ export default {
       const p = svgPoint.matrixTransform(cmt.inverse())
       return {x: p.x, y: p.y}
     },
-    downRightBtn(e) {
-
-    }
   },
   components: {
     vrect: () => import('@/components/Svgs/VRect.vue'),
     vpath: () => import('@/components/Svgs/VPath.vue'),
 
     scrollbar: () => import('@/components/Atoms/ScrollBar.vue'),
+    modal: () => import('@/components/Atoms/Modal.vue'),
   },
 }
 </script>

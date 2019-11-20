@@ -6,27 +6,27 @@
     "elem-1": {
       "position": { "x": 50, "y": 40 },
       "text": "#main",
-      "size": { "x": 100, "y": 24 }
+      "size": { "x": 200, "y": 24 }
     },
     "elem-2": {
-      "position": { "x": 200, "y": 80 },
+      "position": { "x": 300, "y": 80 },
       "text": "#text1",
-      "size": { "x": 100, "y": 24 }
+      "size": { "x": 200, "y": 24 }
     },
     "elem-3": {
-      "position": { "x": 200, "y": 120 },
+      "position": { "x": 300, "y": 120 },
       "text": "bbb2",
-      "size": { "x": 100, "y": 24 }
+      "size": { "x": 200, "y": 24 }
     },
     "elem-4": {
-      "position": { "x": 200, "y": 160 },
+      "position": { "x": 300, "y": 160 },
       "text": "ccc",
-      "size": { "x": 100, "y": 24 }
+      "size": { "x": 200, "y": 24 }
     },
     "elem-5": {
-      "position": { "x": 350, "y": 160 },
+      "position": { "x": 550, "y": 160 },
       "text": "ccc",
-      "size": { "x": 100, "y": 24 }
+      "size": { "x": 200, "y": 24 }
     }
   },
   "lines": {

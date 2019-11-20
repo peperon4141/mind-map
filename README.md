@@ -16,3 +16,11 @@
 - 画面
   - firebase　ログイン
   - フォルダ一覧
+
+- markdown
+  - lexer
+  - 吸着
+- command pattern
+- export
+- 拡大・縮小
+- ショートカット

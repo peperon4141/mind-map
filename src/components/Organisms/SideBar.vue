@@ -17,11 +17,11 @@
           :style="{'margin-left': `${20 * item.depth}px`}"
         )
           font-awesome-icon.icon.reactive(icon="chevron-right")
-          span {{ allElements[item.id].text }}
+          span {{ elements[item.id].text }}
     .menu(v-if="current && 'history' === current.name")
       inputtitle(title="history")
       div(
-        v-for="history in allHistory"
+        v-for="history in history"
         style="margin-left: 40px"
       )
         font-awesome-icon.icon.reactive(icon="chevron-right")
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
 export default {
   components: {
@@ -54,17 +54,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'findElement',
-      'allElements',
-      'allLines',
-      'map',
-      'allHistory'
-    ]),
+    ...mapState('map', ['elements', 'lines', 'info', 'history']),
     list() {
       let list = {}
-      Object.keys(this.$store.state.map.lines).forEach(lineKey => {
-        const line = this.$store.state.map.lines[lineKey]
+      Object.keys(this.lines).forEach(lineKey => {
+        const line = this.lines[lineKey]
         list[line.from] = list[line.from] || {}
         list[line.to] = list[line.to] || {}
         list[line.from][line.to] = list[line.to]
@@ -78,7 +72,7 @@ export default {
           add(childId, depth + 1)
         })
       }
-      const rootId = this.$store.state.map.info.root
+      const rootId = this.info.root
       add(rootId, 1)
       return listElements
     }
@@ -108,7 +102,6 @@ export default {
   height: 100%
   background-color: var(--main)
   box-shadow: 0 0 2px 0 var(--shadow)
-  margin-right: 8px
   #icons
     display: flex
     flex-direction: column
@@ -132,14 +125,11 @@ export default {
       //   transform: scale(1.02)
       //   transition-duration: 0.3s
   #contents
-    width: 240px
+    width: var(--sideBarWidth)
     border-left: 1px solid var(--accent)
     .menu
       > *
-        width: 100%
         color: var(--accent)
-        &:first-of-type
-          margin-top: 0
     .scrollBox
       height: 300px
       overflow: scroll

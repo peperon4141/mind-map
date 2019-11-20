@@ -2,7 +2,7 @@
   <g
     :id="id"
     @mousedown="onDown"
-    @mouseover="onOver"
+    @dblclick="onDblClick"
     ref="rect"
   >
     <rect
@@ -59,22 +59,17 @@ export default {
   },
   methods: {
     onDown (e) {
-      // console.log(`--click----${this.id}`)
+      console.log(`--click----${this.id}`)
       const event = e.hasOwnProperty('changedTouches') ? e.changedTouches[0] : e
       event['id'] = this.id
       this.$emit('mousedown', event)
-      const rect = this.$refs.rect
-      const pos = rect.getBoundingClientRect()
-      // let div = document.querySelector('div#hoverItem')
-      // div.style.left = `${pos.left - 4}px`
-      // div.style.top = `${pos.top - 4}px`
-      // div.style.width = `${pos.width}px`
-      // div.style.height = `${pos.height}px`
-      // console.log({ x: rect.clientLeft, y: rect.clientTop })
-      // console.log({ width: rect.clientWidth, height: rect.clientHeight })
     },
-    onOver (e) {
-    }
+    onDblClick (e) {
+      console.log(`--onDblClick----${this.id}`)
+      const event = e.hasOwnProperty('changedTouches') ? e.changedTouches[0] : e
+      event['id'] = this.id
+      this.$emit('dblclick', event)
+    },
   },
   mounted: function() {
     this.loading = false
