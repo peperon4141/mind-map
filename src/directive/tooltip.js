@@ -1,26 +1,38 @@
+import { gray } from "ansi-colors"
+
 function tooltip() {
+  let left = 0
+  let top = 0
   let tooltip = null
 
-  function addTooltip(el, text, classes = []) {
+  function addTooltip(event, text, classes = []) {
     tooltip = document.createElement('div')
     tooltip.innerText = text
     tooltip.id = 'tooltip'
-    setStyles(tooltip, el)
+    setStyles({left: event.clientX, top: event.clientY})
     classes.forEach( (className) => tooltip.classList.add(className))
     document.body.appendChild(tooltip)
   }
 
-  function setStyles(target, parent) {
-    const parentRect = parent.getBoundingClientRect()
+  function removeTooltip() {
+    tooltip.parentNode.removeChild(tooltip)
+    tooltip = null
+  }
+
+  function setStyles({top, left}) {
+    // const parentRect = parent.getBoundingClientRect()
     const styles = {
       position: 'absolute',
       'z-index': 2147483647, // z-index最大値
-      top: `${parentRect.top - 32}px`,
-      left: `${parentRect.left - target.getBoundingClientRect().width / 2}px`,
-      transform: `translate(calc(-50% + ${parentRect.width / 2}px), 0)`
+      top: `${top + 20}px`,
+      left: `${left}px`,
+      padding: '2px 8px',
+      'background-color': 'gray',
+      'border-radius': '2px',
+      opacity: 0.6
     }
     Object.keys(styles).forEach( key => {
-      target.style[camelCase(key)] = styles[key]
+      tooltip.style[camelCase(key)] = styles[key]
     })
   }
 
@@ -29,16 +41,13 @@ function tooltip() {
     return str.replace(/[-_](.)/g, (match, group) => group.toUpperCase())
   }
 
-  function removeTooltip() {
-    tooltip.parentNode.removeChild(tooltip)
-  }
-
   return {
     bind: function(el, binding) {
+
       // tooltipを追加
       el.addEventListener('mouseenter', (e) => { 
         const { content, classes } = binding.value
-        addTooltip(el, content, classes)
+        addTooltip(e, content, classes)
       })
 
       // tooltipを削除

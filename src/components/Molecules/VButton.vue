@@ -16,14 +16,17 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 @import "@/assets/InputComponents.sass"
 #vbutton.vinput
   .title
+    display: flex
+    justify-content: center
+    align-items: center
+    height: 100%
     color: var(--main)
     background-color: var(--accent)
     border-radius: 2px
     flex-grow: 1
-    text-align: center
     box-shadow: 0 0 2px 0 var(--shadow)
 </style>

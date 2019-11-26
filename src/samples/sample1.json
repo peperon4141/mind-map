@@ -6,7 +6,15 @@
     "elem-1": {
       "position": { "x": 50, "y": 40 },
       "text": "#main",
-      "size": { "x": 200, "y": 24 }
+      "size": { "x": 200, "y": 24 },
+      "style": {
+        "contents": "#main",
+        "left": 50,
+        "top": 40,
+        "width": 200,
+        "height": 24,
+        "background-color": "red"
+      }
     },
     "elem-2": {
       "position": { "x": 300, "y": 80 },
@@ -45,6 +53,9 @@
     "element": {
       "text": "main",
       "size": { "x": 100, "y": 30 }
+    },
+    "element-level-0": {
+      "background-color": "red"
     }
   }
 }

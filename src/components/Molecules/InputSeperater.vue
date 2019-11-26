@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 @import "@/assets/InputComponents.sass"
 #inputseperater.vinput
   height: 8px
@@ -19,7 +19,7 @@ export default {
     height: 2px
     width: 100%
     border-radius: 1px
-    background-color: var(--darkestColor)
+    background-color: var(--trans)
     opacity: 0.8
     margin-left: 2px
 </style>

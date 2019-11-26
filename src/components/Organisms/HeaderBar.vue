@@ -44,6 +44,7 @@ export default {
   padding: 0 8px
   box-shadow: 0 0 4px 0 var(--shadow)
   z-index: 20
+  box-sizing: border-box
   #left
     justify-content: flex-start
     #brand

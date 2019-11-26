@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import jsonData from '../samples/sample1.json'
-import Map from '@/classes/MapManager.ts'
+import jsonData from '../samples/sample2.json'
 
 const map = {
   namespaced: true,
@@ -18,36 +17,6 @@ const map = {
     offset: { x: 0, y: 0 }
   },
   getters: {
-    // allElements: state => state.elements,
-    // allLines: state => state.lines,
-    // allHistory: state => state.history,
-    // findElement: state => (id) => {
-    //   return state.elements[id]
-    // },
-    // currentId: state => state.currentId,
-    // parents: state => {
-    //   const parentIds = Object.keys(state.lines).map( key => state.lines[key].from )
-    //   return parentIds
-    // },
-    // map: state => {
-    //   let list = {}
-    //   Object.keys(state.lines).forEach(lineKey => {
-    //     const line = state.lines[lineKey]
-    //     list[line.from] = list[line.from] || {}
-    //     list[line.to] = list[line.to] || {}
-    //     list[line.from][line.to] = list[line.to]
-    //   })
-    //   return list
-    //   // console.log(list[state.info.root])
-      
-    //   // return {
-    //   //   'elem-1': {
-    //   //     'elem-2': {},
-    //   //     'elem-3': {},
-    //   //     'elem-4': {},
-    //   //   }
-    //   // }
-    // }
   },
   mutations: {
     setCurrent(state, id) {
@@ -58,14 +27,10 @@ const map = {
         Vue.set(state, key, payload[key])
       })
     },
-    // update(state, payload) {
-    //   // console.log(payload)
-    //   Vue.set(state, payload.key, payload.value)
-    // },
     updateElem(state, payload) {
-      let targetElem = state.elements[payload.id]
-      Object.keys(payload.value).forEach( key => {
-        Vue.set(state.elements[payload.id], key, payload.value[key])
+      const style = payload.value.style
+      Object.keys(style).forEach( key => {
+        Vue.set(state.elements[payload.id].style, key, style[key])
       })
     },
     updateElementPosition(state, payload) {

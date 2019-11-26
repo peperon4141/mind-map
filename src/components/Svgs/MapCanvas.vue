@@ -18,9 +18,10 @@
         v-for="(elem, key) in this.elements"
         :key="key"
         :id="key"
+        :class="elem.class"
         :style="getRectStyle(elem)"
         @dblclick.prevent="onEditStart"
-        v-html="convertToHtml(elem.text)"
+        v-html="convertToHtml(elem.style.contents)"
       )
     svg#background(
       preserveAspectRatio="xMinYMin"
@@ -97,21 +98,28 @@ export default {
     hightLighters() {
       const id = this.currentId
       if (!id) return []
-      const elem =  this.elements[id]
-      const pos = elem.position
-      const size = elem.size
+      // const elem =  this.elements[id]
+      // const pos = elem.position
+      // const size = elem.size
+      const style = this.removeOrder(this.elements[id].style)
       const diff = 5
       return [
-        [`${pos.x - diff},${pos.y + diff}`,`${pos.x - diff},${pos.y - diff}`,`${pos.x + diff},${pos.y - diff}`].join(' ')
+        // [`${pos.x - diff},${pos.y + diff}`,`${pos.x - diff},${pos.y - diff}`,`${pos.x + diff},${pos.y - diff}`].join(' ')
+        [`${style.left - diff},${style.top + diff}`,`${style.left - diff},${style.top - diff}`,`${style.left + diff},${style.top - diff}`].join(' ')
       ]
     },
   },
   methods: {
+    removeOrder(style) {
+      const orderRemovedStyles = {}
+      Object.keys(style).forEach( key => {
+        orderRemovedStyles[key] = parseFloat(style[key])
+      })
+      return orderRemovedStyles
+    },
     updateText(e) { this.input = e.target.value },
-    convertToHtml(markedText) { return marked(markedText) },
-    // update(e) { this.input = e.target.value },
-    calcViewBox() {
-      return [this.offset.x, this.offset.y, this.view.x, this.view.y].join(', ')
+    convertToHtml(markedText) {
+      return marked(markedText)
     },
     updateSize() {
       if (this.$refs.bottomHandle && this.$refs.rightHandle) {
@@ -126,52 +134,49 @@ export default {
       }
     },
     pathStartPoint(id) {
-      const parent = this.elements[id]
+      const parentStyle = this.removeOrder(this.elements[id].style)
       return {
-        x: parent.position.x + parent.size.x,
-        y: parent.position.y + parent.size.y / 2
+        x: parentStyle.left + parentStyle.width,
+        y: parentStyle.top + parentStyle.height / 2
       }
     },
     pathEndPoint(id) {
-      const child = this.elements[id]
+      const childStyle = this.removeOrder(this.elements[id].style)
       return {
-        x: child.position.x,
-        y: child.position.y + child.size.y / 2
+        x: childStyle.left,
+        y: childStyle.top + childStyle.height / 2
       }
     },
     getRectStyle(rect) {
-      return {
-        position: 'absolute',
-        left: `${rect.position.x}px`,
-        top: `${rect.position.y}px`,
-        width: `${rect.size.x}px`,
-        height: `${rect.size.y}px`,
-      }
+      const style = rect.style
+      return Object.assign({ position: 'absolute'}, style)
     },
     onDown(event) {
       this.$store.commit('map/update', { 'currentId': event.currentTarget.id })
     },
     onMove(event, item) {
-      // const canvasRect = this.$refs.svg.getBoundingClientRect()
-      // const item = event.currentTarget
       this.$store.commit('map/updateElem', {
         id: this.currentId,
         value: {
-          'position': { x: parseFloat(item.style.left), y: parseFloat(item.style.top)}
+          style: {
+            left: parseFloat(item.style.left),
+            top: parseFloat(item.style.top)
+          }
         }
       })
     },
     onEditStart(e) {
       const elem = this.elements[this.currentId]
-      this.input = elem.text
+      this.input = elem.style.contents
       this.editing = true
     },
     onEditEnd(e) {
-      console.log('--------double--end')
       this.editing = false
       this.$store.commit('map/updateElem', {
         id: this.currentId,
-        value: { 'text': this.input }
+        value: { 
+          style: { contents: this.input }
+        }
       })
     },
     mousePointToSVGPoint(svgElement, targetElement, point){
@@ -188,7 +193,7 @@ export default {
     vrect: () => import('@/components/Svgs/VRect.vue'),
     svgpath: () => import('@/components/Svgs/Path.vue'),
 
-    scrollbar: () => import('@/components/Atoms/ScrollBar.vue'),
+    // scrollbar: () => import('@/components/Atoms/ScrollBar.vue'),
     modal: () => import('@/components/Atoms/Modal.vue'),
   },
 }
@@ -226,4 +231,11 @@ $handleWidth: 9px
   /deep/ .bottom
     left: 0
     bottom: 0
+#editor
+  width: 500px
+  height: 400px
+  display: flex
+  flex-direction: row
+  > *
+    width: 50%
 </style>

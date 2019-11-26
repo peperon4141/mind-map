@@ -14,7 +14,7 @@ export default {
   },
   props: {
     title: { type: String, required: true },
-    value: { type: String, required: false, default: '' }
+    value: { type: String, required: true }
   },
   computed: {
     updateValue: {
@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 @import "@/assets/InputComponents.sass"
 #textinput.vinput
   .input

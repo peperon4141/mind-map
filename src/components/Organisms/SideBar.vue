@@ -17,7 +17,7 @@
           :style="{'margin-left': `${20 * item.depth}px`}"
         )
           font-awesome-icon.icon.reactive(icon="chevron-right")
-          span {{ elements[item.id].text }}
+          span {{ elements[item.id].style.contents }}
     .menu(v-if="current && 'history' === current.name")
       inputtitle(title="history")
       div(
@@ -25,9 +25,14 @@
         style="margin-left: 40px"
       )
         font-awesome-icon.icon.reactive(icon="chevron-right")
-        span {{history.type}} {{ history.elem.text }}
+        span {{history.type}} {{ history.elem.style.contents }}
     .menu(v-if="current && 'file' === current.name")
-      inputtitle(title="file")
+      inputtitle(:title="'file'")
+      numinput(:title="'num'" :value="10")
+      inputseperater(:line="false")
+      textinput(:title="'text'" :value="'test'")
+      inputseperater(:line="true")
+      vbutton(title="button")
 </template>
 
 <script>
@@ -38,7 +43,7 @@ export default {
     inputtitle: () => import('@/components/Molecules/InputTitle.vue'),
     numinput: () => import('@/components/Molecules/NumInput.vue'),
     textinput: () => import('@/components/Molecules/TextInput.vue'),
-    twodinput: () => import('@/components/Molecules/2DInput.vue'),
+    // twodinput: () => import('@/components/Molecules/2DInput.vue'),
     inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
     vbutton: () => import('@/components/Molecules/VButton.vue'),
   },

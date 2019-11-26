@@ -1,19 +1,22 @@
-$height: 28px
-$padding: 8px
+$height: 24px
+// $padding: 8px
 
 .vinput
   display: flex
-  padding: $padding
+  padding: 0 8px
   align-items: center
-  height: $height + $padding * 2
+  height: $height
+  margin: 4px 0
   // width: var(--width)
   > *
     box-sizing: content-box
     font-weight: 200
-    height: $height
-    max-height: $height
-    line-height: $height
+    // height: $height
+    // max-height: $height
+    // line-height: $height
     margin: 0 4px
     color: var(--accent)
   > .title
     min-width: 64px
+  &:hover:not(#inputseperater)
+    background-color: var(--trans-2)    

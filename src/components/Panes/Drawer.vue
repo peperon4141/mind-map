@@ -102,8 +102,7 @@ export default {
     updateRect() {
       const { width, height } = this.$refs.canvas.getBoundingClientRect()
       this.$store.commit('map/update', {
-        key: 'view',
-        value: { x: width, y: height }
+        'view': { x: width, y: height }
       })
     },
     click(e) {
@@ -137,7 +136,7 @@ export default {
     inputtitle: () => import('@/components/Molecules/InputTitle.vue'),
     numinput: () => import('@/components/Molecules/NumInput.vue'),
     textinput: () => import('@/components/Molecules/TextInput.vue'),
-    twodinput: () => import('@/components/Molecules/2DInput.vue'),
+    // twodinput: () => import('@/components/Molecules/2DInput.vue'),
     inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
     vbutton: () => import('@/components/Molecules/VButton.vue'),
 

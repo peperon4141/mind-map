@@ -22,7 +22,7 @@
  
 .panel
   overflow: scroll
-  width: var(--width)
+  // width: var(--width)
   // height: 200px
   background: #fff
   padding: 20px

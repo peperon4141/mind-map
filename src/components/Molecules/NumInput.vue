@@ -1,8 +1,7 @@
 <template lang="pug">
 #numinput.vinput
   span.title {{title}}
-  input.input.reactive(
-    type="range"
+  range(
     v-model="updateValue"
     :min="option.min"
     :max="option.max"
@@ -18,6 +17,7 @@
 <script>
 export default {
   components: {
+    range: () => import('@/components/Atoms/Range.vue'),
     vinput: () => import('@/components/Atoms/VInput.vue'),
   },
   props: {
@@ -34,31 +34,17 @@ export default {
     updateValue: {
       get () { return this.value },
       set (value) {
-        if (this.value !== value) this.$emit('input', parseInt(value))
+        if (this.value === value) return
+        this.$emit('input', parseInt(value))
       }
     }
   }
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 @import "@/assets/InputComponents.sass"
 #numinput.vinput
-  .input
-    appearance: none
-    height: 2px
-    width: 80px
-    background-color: var(--background)
-    border-radius: 1px
-    &::-webkit-slider-thumb
-      appearance: none
-      cursor: pointer
-      position: relative
-      width: 16px
-      height: 16px
-      display: block
-      background-color: var(--accent)
-      border-radius: 2px
   #vinput
     flex-grow: 1
 </style>

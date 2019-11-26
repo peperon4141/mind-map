@@ -20,6 +20,8 @@ export default {
   },
   computed: {
     path: function() {
+      // console.log(this.start)
+      // console.log(this.end)
       const points = [
         `M ${this.start.x},${this.start.y}`, // 始点
         `C ${this.start.x + (this.end.x - this.start.x) / 4 },${this.start.y}`, // 始点の制御点

@@ -28,43 +28,37 @@ export default {
           styles['--sub'] = 'rgb(32, 48, 48)'
           styles['--accent'] = 'rgb(192, 216, 216)'
           styles['--trans'] = 'rgba(80, 96, 96, 0.8)'
+          styles['--trans-2'] = 'rgba(80, 96, 96, 0.8)'
           break
         case 2:
           // bluePrint
           styles['--background'] = 'rgb(27, 59, 89)'
           styles['--main'] = 'rgb(45, 92, 123)'
-          styles['--trans'] = 'rgb(192, 216, 216, 0.4)'
           styles['--sub'] = 'rgb(37, 80, 110)'
           styles['--accent'] = 'rgb(192, 216, 216)'
+          styles['--trans'] = 'rgb(192, 216, 216, 0.4)'
+          styles['--trans-2'] = 'rgba(80, 96, 96, 0.8)'
           break
         case 3:
           // fool
           styles['--background'] = 'rgb(255, 200, 1)'
           styles['--main'] = 'rgb(255, 200, 1)'
-          styles['--trans'] = 'rgb(200, 200, 200, 0.5)'
           styles['--sub'] = 'rgb(255, 200, 1)'
           styles['--accent'] = 'rgb(0, 123, 255)'
+          styles['--trans'] = 'rgb(200, 200, 200, 0.5)'
+          styles['--trans-2'] = 'rgba(80, 96, 96, 0.8)'
           break
         default:
           // light
           styles['--background'] = 'rgb(200, 216, 216)'
           styles['--main'] = 'rgb(255, 255, 255)'
-          styles['--trans'] = 'rgba(216, 232, 232, 0.5)'
-          // styles['--sub'] = 'rgb(216, 216, 216)'
           styles['--sub'] = 'rgb(252,254,254)'
           styles['--accent'] = 'rgb(21, 51, 65)'
-          // styles['--accent'] = 'rgb(144, 160, 160)'
+          styles['--trans'] = 'rgba(216, 232, 232, 0.5)'
+          styles['--trans-2'] = 'rgba(216, 232, 232, 0.3)'
       }
       return styles
     }
-  },
-  mounted() {
-    this.$store.watch(
-      (state, getters) => getters.prefecture,
-      (newValue, oldValue) => {
-         console.log('prefecture changed! %s => %s', oldValue, newValue)
-      }
-    )
   },
   components: {
     headerbar: () => import('@/components/Organisms/HeaderBar.vue'),

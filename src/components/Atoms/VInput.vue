@@ -30,10 +30,11 @@ export default {
 
 <style lang="sass">
 input#vinput
+  box-sizing: border-box
   width: 100%
   height: 100%
   color: var(--accent)
-  background-color: var(--main)
+  // background-color: var(--trans)
   border: none
   border-radius: 2px
   padding: 0 4px
