@@ -19,27 +19,27 @@ const map = {
   getters: {
   },
   mutations: {
-    setCurrent(state, id) {
+    setCurrent(state: any, id: string) {
       state.currentId = id
     },
-    update(state, payload) {
+    update(state: any, payload: any) {
       Object.keys(payload).forEach( key => {
         Vue.set(state, key, payload[key])
       })
     },
-    updateElem(state, payload) {
+    updateElem(state: any, payload: any) {
       const style = payload.value.style
       Object.keys(style).forEach( key => {
         Vue.set(state.elements[payload.id].style, key, style[key])
       })
     },
-    updateElementPosition(state, payload) {
+    updateElementPosition(state: any, payload: any) {
       let targetElem = state.elements[payload.id]
       if (targetElem && payload.position) {
         targetElem.position = payload.position
       }
     },
-    create(state, payload) {
+    create(state: any, payload: any) {
       const from = payload.from
       const parentElem = state.elements[from]
       const elemId = `elem-${Math.random().toString(32).substring(2, 8)}`
@@ -59,7 +59,7 @@ const map = {
       Vue.set(state.lines, lineId, newLine)
       state.currentId = elemId
     },
-    delete(state, payload) {
+    delete(state: any, payload: any) {
       state.history.push({
         type: 'delete',
         id: payload.id

@@ -1,11 +1,10 @@
 function drag() {
-  let item = null
-  let prevPosition = null
+  let item: any = null
+  let prevPosition: any | null = null
 
   function noop() {}
 
-  function onDown(e, callback) {
-    // console.log('-----down')
+  function onDown(e: any, callback: Function) {
     const event = e.hasOwnProperty('changedTouches') ? e.changedTouches[0] : e
     item = event.currentTarget
     // console.log('-----down:' + item.style.left + '/' + item.style.top)
@@ -14,7 +13,7 @@ function drag() {
     callback(event)
   }
 
-  function onMove(e, callback) {
+  function onMove(e: any, callback: Function) {
     if (!item || !prevPosition) return
     const event = e.hasOwnProperty('changedTouches') ? e.changedTouches[0] : e
     const diff = { x: event.clientX - prevPosition.x, y: event.clientY - prevPosition.y }
@@ -30,7 +29,7 @@ function drag() {
     callback(event, item)
   }
 
-  function onUp(e, callback) {
+  function onUp(e: Event, callback: Function) {
     // console.log('---------up')
     item = null
     prevPosition = null
@@ -38,9 +37,9 @@ function drag() {
   }
 
   return {
-    bind: function(el, binding) {
+    bind: function(el: any, binding: any) {
       // Down
-      el.addEventListener('mousedown', (e) => {
+      el.addEventListener('mousedown', (e: any) => {
         const callback = binding.value.down || noop
         onDown(e, callback)
       })

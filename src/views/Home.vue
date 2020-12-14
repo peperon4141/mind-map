@@ -1,5 +1,7 @@
-<template>
-<h1>home</h1>
+<template lang="pug">
+  div 
+    h1 home
+    a(href="/editor") editor
 </template>
 
 <script>

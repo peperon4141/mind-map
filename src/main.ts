@@ -17,10 +17,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 import '@/assets/common.sass'
 
 // vue directiveのインストール
-import draggable from '@/directive/draggable'
-Vue.directive('drag', draggable)
-import tooltip from '@/directive/tooltip'
-Vue.directive('tooltip', tooltip)
+import test from '@/directive/draggable'
+Vue.directive('drag', test)
+Vue.directive('tooltip', require('@/directive/tooltip'))
 
 Vue.config.productionTip = false
 

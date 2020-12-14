@@ -39,7 +39,6 @@
       font-awesome-icon.icon.reactive(icon="search-plus" @mousedown="expand")
       font-awesome-icon.icon.reactive(icon="search-minus" @mousedown="shrink")
     #center
-      span All rights reserved Soichiro.
     #right
       font-awesome-icon.icon.reactive(:icon="['far','star']")
 </template>

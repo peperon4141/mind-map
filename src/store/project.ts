@@ -8,7 +8,7 @@ const setting = {
   getters: {
   },
   mutations: {
-    update(state, payload) {
+    update(state: any, payload: any) {
       Object.keys(payload).forEach( key => {
         Vue.set(state, key, payload[key])
       })
