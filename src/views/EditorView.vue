@@ -62,7 +62,7 @@ export default {
   },
   components: {
     headerbar: () => import('@/components/Organisms/HeaderBar.vue'),
-    sidebar: () => import('@/components/Organisms/SideBar.vue'),
+    sidebar: () => import('@/components/SideBar/SideBar.vue'),
     footerbar: () => import('@/components/Organisms/FooterBar.vue'),
 
     drawer: () => import('@/components/Panes/Drawer.vue'),

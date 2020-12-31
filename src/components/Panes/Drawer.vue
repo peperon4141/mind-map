@@ -1,46 +1,7 @@
 <template lang="pug">
 #drawer(:class="{ expanding: expanding }")
-  #uppermenu
-    #left
-      font-awesome-icon.icon.reactive(icon="undo-alt" v-tooltip="{content: 'undo'}")
-      font-awesome-icon.icon.reactive(icon="redo-alt" v-tooltip="{content: 'redo'}")
-      separater
-      font-awesome-icon.icon.reactive(icon="border-all")
-      separater
-      font-awesome-icon.icon.reactive(icon="sort-amount-down")
-      font-awesome-icon.icon.reactive(icon="sort-amount-up")
-      separater
-      font-awesome-icon.icon.reactive(icon="sort-alpha-down")
-      font-awesome-icon.icon.reactive(icon="sort-alpha-up")
-    #center
-    #right
-      font-awesome-icon.icon.reactive(
-        icon="file-download"
-        @mousedown="download"
-      )
-      separater
-      template
-        font-awesome-icon.icon.reactive(
-          v-if="expanding"
-          icon="compress-arrows-alt"
-          @mousedown="expandView(false)"
-        )
-        font-awesome-icon.icon.reactive(
-          v-else
-          icon="expand-arrows-alt"
-          @mousedown="expandView(true)"
-        )
   #canvas(ref="canvas")
     mapcanvas(:view="view" :size="size" :offset="offset")
-    //- this.$store.state.map.currentId//-   vbutton(title="insert" @click="click")
-  #lowermenu
-    #left
-      font-awesome-icon.icon.reactive(icon="map-marker-alt")
-      font-awesome-icon.icon.reactive(icon="search-plus" @mousedown="expand")
-      font-awesome-icon.icon.reactive(icon="search-minus" @mousedown="shrink")
-    #center
-    #right
-      font-awesome-icon.icon.reactive(:icon="['far','star']")
 </template>
 
 <script>
@@ -130,18 +91,7 @@ export default {
     }
   },
   components: {
-    inputwrapper: () => import('@/components/Atoms/InputWrapper.vue'),
-
-    inputtitle: () => import('@/components/Molecules/InputTitle.vue'),
-    numinput: () => import('@/components/Molecules/NumInput.vue'),
-    textinput: () => import('@/components/Molecules/TextInput.vue'),
-    // twodinput: () => import('@/components/Molecules/2DInput.vue'),
-    inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
-    vbutton: () => import('@/components/Molecules/VButton.vue'),
-
-    // svgcanvas: () => import('@/components/Svgs/SvgCanvas.vue'),
     mapcanvas: () => import('@/components/Svgs/MapCanvas.vue'),
-
     separater: () => import('@/icons/separater.vue'),
   }
 }
@@ -167,38 +117,9 @@ export default {
     height: 100% !important
     // transition: all 0.3s ease
     transition: all 0.2s ease-out 0s
-  #uppermenu, #lowermenu
-    display: flex
-    padding: 0 4px
-    height: 40px
-    background-color: var(--sub)
-    #left, #right, #center
-      display: flex
-      align-items: center
-      > *
-        color: var(--accent)
-        margin: 0 8px
-      > .separater
-        width: 1px
-        height: 24px
-        border-radius: 50%
-        background-color: var(--accent)
-        opacity: 0.3
-    #center
-      margin: auto
-    .icon
-      opacity: 0.8
-      &:hover
-        opacity: 1.0
-  #uppermenu
-    border-radius: 4px 4px 0 0
-    border-bottom: 1px solid var(--accent)
-  #lowermenu
-    border-radius: 0 0 4px 4px
-    border-top: 1px solid var(--accent)
   #canvas
     position: relative
-    height: calc(100% - 80px)
+    height: 100%
     display: flex
     flex-direction: row
     /deep/ #svgcanvas

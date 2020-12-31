@@ -2,59 +2,41 @@
   #mapcanvas(
     :style="{ '--canvasWidth': `${2000 * scale}px`, '--canvasHeight': `${2000 * scale}px` }"
   )
+    background
     #main(
       ref="svg"
       :style="{ transform: `scale(${scale},${scale})` }"
     )
-      svgpath(
-        v-for="(line, key) in this.lines"
+      svg
+        svg-path.handle(
+          v-if="points"
+          :points="points"
+          :stroke="'red'"
+          :width="3"
+          :opacity="0.3"
+          fill="none"
+        )
+      connector(
+        v-for="(connector, key) in this.connectors"
         :key="key"
         :id="key"
-        :start="pathStartPoint(line.from)"
-        :end="pathEndPoint(line.to)"
+        :startItem="findItem(connector.from)"
+        :endItem="findItem(connector.to)"
       )
-      .rect(
-        v-drag="{ down: onDown, move: onMove }"
-        v-for="(elem, key) in this.elements"
+      item(
+        v-for="(item, key) in this.items"
+        v-drag="{ down: changeCurrent, move: changePosition }"
+        v-events="{ dblclick: onEditStart }"
         :key="key"
         :id="key"
-        :class="elem.class"
-        :style="getRectStyle(elem)"
-        @dblclick.prevent="onEditStart"
-        v-html="convertToHtml(elem.style.contents)"
-      )
-    svg#background(
-      preserveAspectRatio="xMinYMin"
-      font-family="sans-serif"
-      :style="{ transform: `scale(${scale},${scale})` }"
-    )
-      path(
-        v-for="num of size.x / lineInterval" :key="`v-${num}`"
-        :d="`M ${lineInterval * num} 0 V${size.x}`"
-        stroke="var(--accent)"
-        :stroke-width="(num % 10 === 0) ? 0.6 : 0.3"
-        stroke-opacity="0.4"
-      )
-      path(
-        v-for="num of size.y / lineInterval" :key="`h-${num}`"
-        :d="`M 0 ${lineInterval * num} H${size.y}`"
-        stroke="var(--accent)"
-        :stroke-width="(num % 10 === 0) ? 0.6 : 0.3"
-        stroke-opacity="0.4"
-      )
-      polyline(
-        v-for="item in hightLighters"
-        :points="item"
-        stroke="var(--accent)" fill="none"
-        stroke-width="2"
-        stroke-opacity="0.4"
-        stroke-linejoin="round"
-        stroke-linecap="round"
+        :item="item"
       )
     modal(v-if="editing" @close="onEditEnd")
       #editor
         textarea(:value="input" @input="updateText")
-        div(v-html="convertToHtml(input)")
+        div(class="markdown-body" v-html="convertToHtml(input)")
+    operator-up
+    operator-down
 </template>
 
 <script>
@@ -93,30 +75,22 @@ export default {
     this.updateSize()
   },
   computed: {
-    ...mapState('map', ['elements', 'lines', 'currentId']),
+    ...mapState('map', ['currentId']),
+    ...mapGetters('map', ['items', 'connectors']),
     ...mapState('user', ['scale']),
-    hightLighters() {
-      const id = this.currentId
-      if (!id) return []
-      // const elem =  this.elements[id]
-      // const pos = elem.position
-      // const size = elem.size
-      const style = this.removeOrder(this.elements[id].style)
-      const diff = 5
+    points() {
+      if (!this.currentId) return null
+      const style = this.items[this.currentId]
       return [
-        // [`${pos.x - diff},${pos.y + diff}`,`${pos.x - diff},${pos.y - diff}`,`${pos.x + diff},${pos.y - diff}`].join(' ')
-        [`${style.left - diff},${style.top + diff}`,`${style.left - diff},${style.top - diff}`,`${style.left + diff},${style.top - diff}`].join(' ')
+        { x: style.left - 5, y: style.top - 5 },
+        { x: style.left + style.width + 15, y: style.top - 5 },
+        { x: style.left + style.width + 15, y: style.top + style.height + 15 },
+        { x: style.left - 5, y: style.top + style.height + 15 },
+        { x: style.left - 5, y: style.top -5 },
       ]
-    },
+    }
   },
   methods: {
-    removeOrder(style) {
-      const orderRemovedStyles = {}
-      Object.keys(style).forEach( key => {
-        orderRemovedStyles[key] = parseFloat(style[key])
-      })
-      return orderRemovedStyles
-    },
     updateText(e) { this.input = e.target.value },
     convertToHtml(markedText) {
       return marked(markedText)
@@ -133,41 +107,25 @@ export default {
         }
       }
     },
-    pathStartPoint(id) {
-      const parentStyle = this.removeOrder(this.elements[id].style)
-      return {
-        x: parentStyle.left + parentStyle.width,
-        y: parentStyle.top + parentStyle.height / 2
-      }
+    findItem(id) {
+      return this.items[id]
     },
-    pathEndPoint(id) {
-      const childStyle = this.removeOrder(this.elements[id].style)
-      return {
-        x: childStyle.left,
-        y: childStyle.top + childStyle.height / 2
-      }
-    },
-    getRectStyle(rect) {
-      const style = rect.style
-      return Object.assign({ position: 'absolute'}, style)
-    },
-    onDown(event) {
+    changeCurrent(event) {
       this.$store.commit('map/update', { 'currentId': event.currentTarget.id })
     },
-    onMove(event, item) {
+    changePosition(event, element) {
+      if (!this.currentId) return
       this.$store.commit('map/updateElem', {
         id: this.currentId,
         value: {
-          style: {
-            left: parseFloat(item.style.left),
-            top: parseFloat(item.style.top)
-          }
+          left: parseFloat(element.style.left),
+          top: parseFloat(element.style.top)
         }
       })
     },
-    onEditStart(e) {
-      const elem = this.elements[this.currentId]
-      this.input = elem.style.contents
+    onEditStart(item, e) {
+      const elem = this.items[this.currentId]
+      this.input = elem.content
       this.editing = true
     },
     onEditEnd(e) {
@@ -175,7 +133,7 @@ export default {
       this.$store.commit('map/updateElem', {
         id: this.currentId,
         value: { 
-          style: { contents: this.input }
+          content: this.input
         }
       })
     },
@@ -188,10 +146,27 @@ export default {
       const p = svgPoint.matrixTransform(cmt.inverse())
       return {x: p.x, y: p.y}
     },
+    hightLighters(item) {
+      const id = this.currentId
+      if (!id) return []
+      const style = this.items[id]
+      const diff = 5
+      return [
+        // [`${pos.x - diff},${pos.y + diff}`,`${pos.x - diff},${pos.y - diff}`,`${pos.x + diff},${pos.y - diff}`].join(' ')
+        [`${style.left - diff},${style.top + diff}`,`${style.left - diff},${style.top - diff}`,`${style.left + diff},${style.top - diff}`].join(' ')
+      ]
+    },
   },
   components: {
-    vrect: () => import('@/components/Svgs/VRect.vue'),
-    svgpath: () => import('@/components/Svgs/Path.vue'),
+    Connector: () => import('@/components/Svgs/Connector'),
+    Item: () => import('@/components/Svgs/Item'),
+    background: () => import('@/components/Svgs/Background'),
+
+    SvgPath: () => import('@/components/Svgs/SvgPath'),
+
+    OperatorUp: () => import('@/components/Panes/OperatorUp'),
+    OperatorDown: () => import('@/components/Panes/OperatorDown'),
+
 
     // scrollbar: () => import('@/components/Atoms/ScrollBar.vue'),
     modal: () => import('@/components/Atoms/Modal.vue'),
@@ -200,6 +175,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import url("../markdown.css")
+
 $handleWidth: 9px
 #mapcanvas
   overflow: scroll
@@ -217,7 +194,7 @@ $handleWidth: 9px
       position: absolute
       width: var(--canvasWidth)
       height: var(--canvasHeight)
-    .rect
+    .item
       border: 1px solid blue
       background: skyblue
       border-radius: 2px
@@ -225,12 +202,14 @@ $handleWidth: 9px
       padding: 4px
   #background
     z-index: 0
-  /deep/ .right
-    top: 0
-    right: 0
-  /deep/ .bottom
-    left: 0
-    bottom: 0
+  #operator-up
+    z-index:  1000
+    top: 8px
+    right: 8px
+  #operator-down
+    z-index:  1000
+    bottom: 8px
+    right: 8px
 #editor
   width: 500px
   height: 400px

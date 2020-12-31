@@ -1,22 +1,32 @@
 import Vue from 'vue'
-import jsonData from '../samples/sample2.json'
+import Command from '../../node_modules/mind_cli/src/command'
+
+let history = new Command([])
+  .add('test1')
+  .add('test2')
+  .add('test3')
+  .add('test4')
+  .history
+let tree: any = new Command(history).tree()
+tree = new Command(history)
+  .connect(Object.keys(tree.items)[0], Object.keys(tree.items)[1])
+  .connect(Object.keys(tree.items)[0], Object.keys(tree.items)[2])
+  .tree()
 
 const map = {
   namespaced: true,
   state: {
     currentId: null,
-    elements: jsonData.elements,
-    lines: jsonData.lines,
-    groupds: jsonData.groups,
-    comments: jsonData.comments,
-    defaultStyles: jsonData.defaultStyles,
-    info: jsonData.info,
     history: [],
     size: { x: 2000, y: 2000 },
     view: { x: 800, y: 800 },
-    offset: { x: 0, y: 0 }
+    offset: { x: 0, y: 0 },
+    tree: tree
   },
   getters: {
+    items: (state: any) => state.tree.items,
+    connectors: (state: any) => state.tree.connectors, 
+    history: (state: any) => state.tree.history
   },
   mutations: {
     setCurrent(state: any, id: string) {
@@ -28,18 +38,13 @@ const map = {
       })
     },
     updateElem(state: any, payload: any) {
-      const style = payload.value.style
-      Object.keys(style).forEach( key => {
-        Vue.set(state.elements[payload.id].style, key, style[key])
+      const updatedParams = payload.value
+      Object.keys(updatedParams).forEach( key => {
+        Vue.set(state.tree.items[payload.id], key, updatedParams[key])
       })
     },
-    updateElementPosition(state: any, payload: any) {
-      let targetElem = state.elements[payload.id]
-      if (targetElem && payload.position) {
-        targetElem.position = payload.position
-      }
-    },
     create(state: any, payload: any) {
+
       const from = payload.from
       const parentElem = state.elements[from]
       const elemId = `elem-${Math.random().toString(32).substring(2, 8)}`

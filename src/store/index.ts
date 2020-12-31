@@ -3,13 +3,9 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import map from '@/store/map.ts'
-import user from '@/store/user.ts'
-import project from '@/store/project.ts'
-
-// const map = require('@/store/map')
-// const user = require('@/store/user')
-// const project = require('@/store/project.js')
+import map from '@/store/map'
+import user from '@/store/user'
+import project from '@/store/project'
 
 export default new Vuex.Store({
   modules: {

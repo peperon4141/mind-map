@@ -1,72 +1,57 @@
 <template lang="pug">
 #sidebar
-  #icons
-    font-awesome-icon.icon.reactive(
-      v-for="item in menus"
+  ul#icons
+    li(
+      v-for="item in MENUS"
       :key="item.name"
       :class="{active: (current && item.name === current.name), [item.name]: true}"
-      @click="click(item)"
-      :icon="item.icon"
     )
-  #contents(v-show="showContents")
-    .menu(v-if="current && 'overview' === current.name")
-      inputtitle(title="overview")
-      .scrollBox
-        div(
-          v-for="item in list"
-          :style="{'margin-left': `${20 * item.depth}px`}"
-        )
-          font-awesome-icon.icon.reactive(icon="chevron-right")
-          span {{ elements[item.id].style.contents }}
-    .menu(v-if="current && 'history' === current.name")
-      inputtitle(title="history")
-      div(
-        v-for="history in history"
-        style="margin-left: 40px"
+      font-awesome-icon.icon(
+        @click="click(item)"
+        :icon="item.icon"
       )
-        font-awesome-icon.icon.reactive(icon="chevron-right")
-        span {{history.type}} {{ history.elem.style.contents }}
+  div#contents(v-show="showContents")
+    .menu(v-if="current && 'overview' === current.name")
+      overview
+    .menu(v-if="current && 'history' === current.name")
+      history
     .menu(v-if="current && 'file' === current.name")
-      inputtitle(:title="'file'")
-      numinput(:title="'num'" :value="10")
-      inputseperater(:line="false")
-      textinput(:title="'text'" :value="'test'")
-      inputseperater(:line="true")
-      vbutton(title="button")
+      file
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
+const MENUS = [
+  { name: 'overview', icon: 'align-justify' },
+  { name: 'history', icon: 'history' },
+  { name: 'file', icon: 'file-export' }
+]
 export default {
   components: {
     inputtitle: () => import('@/components/Molecules/InputTitle.vue'),
-    numinput: () => import('@/components/Molecules/NumInput.vue'),
-    textinput: () => import('@/components/Molecules/TextInput.vue'),
-    // twodinput: () => import('@/components/Molecules/2DInput.vue'),
-    inputseperater: () => import('@/components/Molecules/InputSeperater.vue'),
-    vbutton: () => import('@/components/Molecules/VButton.vue'),
+
+    overview: () => import('@/components/SideBar/Overview.vue'),
+    history: () => import('@/components/SideBar/History.vue'),
+    File: () => import('@/components/SideBar/File.vue')
   },
   data () {
     return {
-      menus: [
-        { name: 'overview', icon: 'align-justify' },
-        { name: 'history', icon: 'history' },
-        { name: 'file', icon: 'file-export' },
-      ],
+      MENUS: MENUS,
       current: null,
       showContents: true
     }
   },
   computed: {
-    ...mapState('map', ['elements', 'lines', 'info', 'history']),
+    ...mapState('map', ['elements', 'lines', 'info']),
+    ...mapGetters('map', ['items', 'connectors', 'history']),
     list() {
       let list = {}
-      Object.keys(this.lines).forEach(lineKey => {
-        const line = this.lines[lineKey]
-        list[line.from] = list[line.from] || {}
-        list[line.to] = list[line.to] || {}
-        list[line.from][line.to] = list[line.to]
+      Object.keys(this.connectors).forEach(lineKey => {
+        const connector = this.connectors[lineKey]
+        list[connector.from] = list[connector.from] || {}
+        list[connector.to] = list[connector.to] || {}
+        list[connector.from][connector.to] = list[connector.to]
       })
 
       let listElements = []
@@ -77,25 +62,29 @@ export default {
           add(childId, depth + 1)
         })
       }
-      const rootId = this.info.root
+      // const rootId = this.info.root
+      const rootId = Object.keys(this.items)[0]
       add(rootId, 1)
       return listElements
     }
   },
   methods: {
-    click(nextMenu) {
+    click(menu) {
       // console.log(this.map)
-      if (this.current === nextMenu) {
+      if (this.current === menu) {
         this.current = null
         this.showContents = !this.showContents
       } else {
-        this.current = nextMenu
+        this.current = menu
         this.showContents = true
       }
     }
   },
   created() {
-    this.click(this.menus[0])
+    this.click(this.MENUS[0])
+  },
+  mounted() {
+    this.current = this.MENUS[0]
   }
 }
 </script>
