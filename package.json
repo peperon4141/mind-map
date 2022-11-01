@@ -17,7 +17,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.7",
     "core-js": "^3.3.2",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "mind_cli": "../mind_cli",
     "register-service-worker": "^1.6.2",
     "reset-css": "^5.0.1",
